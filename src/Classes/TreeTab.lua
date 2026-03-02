@@ -19,11 +19,23 @@ local s_gsub = string.gsub
 local s_byte = string.byte
 local dkjson = require "dkjson"
 
+-- Helper function to find toast index by content pattern
+-- TODO: remove this when when we can control toast notifications better
+local function findToastIndex(pattern)
+	for i, msg in ipairs(main.toastMessages) do
+		if msg:match(pattern) then
+			return i
+		end
+	end
+	return nil
+end
+
 local TreeTabClass = newClass("TreeTab", "ControlHost", function(self, build)
 	self.ControlHost()
 
 	self.build = build
 	self.isComparing = false;
+	self.isCustomMaxDepth = false;
 
 	self.viewer = new("PassiveTreeView")
 
@@ -67,24 +79,36 @@ local TreeTabClass = newClass("TreeTab", "ControlHost", function(self, build)
 					end
 					if spec.curClassId == self.build.spec.curClassId then
 						local respec = 0
+						local respecAscendancy = 0
 						for nodeId, node in pairs(self.build.spec.allocNodes) do
 							-- Assumption: Nodes >= 65536 are small cluster passives.
 							if node.type ~= "ClassStart" and node.type ~= "AscendClassStart"
 							and (self.build.spec.tree.clusterNodeMap[node.dn] == nil or node.isKeystone or node.isJewelSocket) and nodeId < 65536
 							and not spec.allocNodes[nodeId] then
 								if node.ascendancyName then
-									respec = respec + 5
+									respecAscendancy = respecAscendancy + 1
 								else
 									respec = respec + 1
 								end
 							end
 						end
-						if respec > 0 then
-							tooltip:AddLine(16, "^7Switching to this tree requires "..respec.." refund points.")
+						if respec > 0 or respecAscendancy > 0 then
+							local goldCost = data.goldRespecPrices[build.characterLevel]
+							local totalGold = (respec * goldCost) + (respecAscendancy * goldCost * 5)
+							local goldStr = formatNumSep(tostring(totalGold))
+							tooltip:AddLine(16, "^xFFD700" .. goldStr .. " Gold ^7required to switch to this tree.")
+							if respec > 0 then
+								local nodeWord = respec == 1 and "Passive node to be refunded" or "Passive nodes to be refunded"
+								tooltip:AddLine(16, s_format("^7\t%d %s.", respec, nodeWord))
+							end
+							if respecAscendancy > 0 then
+								local ascendWord = respecAscendancy == 1 and "Ascendancy node to be refunded" or "Ascendancy nodes to be refunded"
+								tooltip:AddLine(16, s_format("^7\t%d %s.", respecAscendancy, ascendWord))
+							end
 						end
 					end
 				end
-				tooltip:AddLine(16, "Game Version: "..treeVersions[spec.treeVersion].display)
+				tooltip:AddLine(16, "^7Game Version: "..treeVersions[spec.treeVersion].display)
 			end
 		end
 	end
@@ -166,14 +190,14 @@ local TreeTabClass = newClass("TreeTab", "ControlHost", function(self, build)
 		self.viewer.searchStr = buf
 		self.searchFlag = buf ~= self.viewer.searchStrSaved
 	end, nil, nil, true)
-	self.controls.treeSearch.tooltipText = "Uses Lua pattern matching for complex searches\nPrefix your search with \"oil:\" to search by anoint recipe"
+	self.controls.treeSearch.tooltipText = "Uses Lua pattern matching for complex searches.\nPrefix your search with \"oil:\" to search by anoint recipe.\nTo search for multiple terms: (increased.fire.damage|increased.area.of.effect|etc)"
 
 	self.tradeLeaguesList = { }
 	-- Find Timeless Jewel Button
 	self.controls.findTimelessJewel = new("ButtonControl", { "LEFT", self.controls.treeSearch, "RIGHT" }, { 8, 0, 150, 20 }, "Find Timeless Jewel", function()
 		self:FindTimelessJewel()
 	end)
-	
+
 	--Default index for Tattoos
 	self.defaultTattoo = { }
 
@@ -188,7 +212,20 @@ local TreeTabClass = newClass("TreeTab", "ControlHost", function(self, build)
 	end)
 
 	-- Control for setting max node depth to limit calculation time of the heat map
-	self.controls.nodePowerMaxDepthSelect = new("DropDownControl", { "LEFT", self.controls.treeHeatMap, "RIGHT" }, { 8, 0, 50, 20 }, { "All", 5, 10, 15 }, function(index, value)
+	self.controls.nodePowerMaxDepthSelect = new("DropDownControl", { "LEFT", self.controls.treeHeatMap, "RIGHT" }, { 8, 0, 55, 20 }, { "All", 5, 10, 15, "Custom" }, function(index, value)
+		-- Show custom value control and resize/move elements
+		self.isCustomMaxDepth = value == "Custom"
+		if self.isCustomMaxDepth then
+			self.controls.nodePowerMaxDepthSelect.width = 70
+			self.controls.nodePowerMaxDepthCustom.shown = true
+			self.controls.treeHeatMapStatSelect:SetAnchor("LEFT", self.controls.nodePowerMaxDepthCustom, "RIGHT", nil, nil, nil)
+			return
+		end
+
+		self.controls.nodePowerMaxDepthSelect.width = 55
+		self.controls.nodePowerMaxDepthCustom.shown = false
+		self.controls.treeHeatMapStatSelect:SetAnchor("LEFT", self.controls.nodePowerMaxDepthSelect, "RIGHT", nil, nil, nil)
+
 		local oldMax = self.build.calcsTab.nodePowerMaxDepth
 
 		if type(value) == "number" then
@@ -206,6 +243,17 @@ local TreeTabClass = newClass("TreeTab", "ControlHost", function(self, build)
 		end
 	end)
 	self.controls.nodePowerMaxDepthSelect.tooltipText = "Limit of Node distance to search (lower = faster)"
+
+	-- Control for setting max node depth by custom value
+	self.controls.nodePowerMaxDepthCustom = new("EditControl", { "LEFT", self.controls.nodePowerMaxDepthSelect, "RIGHT" }, { 8, 0, 70, 20 }, "0", nil, "%D", nil, function(value)
+		self.build.calcsTab.nodePowerMaxDepth = tonumber(value)
+
+		-- If the heat map is shown, recalculate it with new value
+		if self.viewer.showHeatMap then
+			self:SetPowerCalc(self.build.calcsTab.powerStat)
+		end
+	end)
+	self.controls.nodePowerMaxDepthCustom.shown = false
 
 	-- Control for selecting the power stat to sort by (Defense, DPS, etc)
 	self.controls.treeHeatMapStatSelect = new("DropDownControl", { "LEFT", self.controls.nodePowerMaxDepthSelect, "RIGHT" }, { 8, 0, 150, 20 }, nil, function(index, value)
@@ -241,10 +289,45 @@ local TreeTabClass = newClass("TreeTab", "ControlHost", function(self, build)
 		end
 	end)
 	self.controls.powerReportList.shown = false
+	-- Progress callback from the CalcsTab power builder coroutine
+	self.powerBuilderToastActive = false
+	self.lastProgressToastUpdate = 0
+	self.build.powerBuilderProgressCallback = function(percent)
+		local now = GetTime()
+		if now - self.lastProgressToastUpdate < 100 then
+			return
+		end
+
+		local message = percent and string.format("Building Power Report... (%d%%)", percent) or "Building Power Report..."
+
+		self.controls.powerReportList.label = message
+		self.lastProgressToastUpdate = now
+		local toastIndex = findToastIndex("^Building Power Report")
+		if toastIndex then
+			main.toastMessages[toastIndex] = message
+		else
+			t_insert(main.toastMessages, message)
+			self.powerBuilderToastActive = true
+		end
+	end
+	-- Completion callback from the CalcsTab power builder coroutine
 	self.build.powerBuilderCallback = function()
 		local powerStat = self.build.calcsTab.powerStat or data.powerStatList[1]
 		local report = self:BuildPowerReportList(powerStat)
 		self.controls.powerReportList:SetReport(powerStat, report)
+		local toastIndex = findToastIndex("^Building Power Report")
+		if self.powerBuilderToastActive and toastIndex then
+			-- Remove the toast from the queue instead of triggering hide animation
+			-- This prevents issues when the toast is not currently displayed (queued behind another toast)
+			-- TODO: look into allowing toast notifications to stack and have UUID's we can control them better
+			if toastIndex == 1 then
+				main.toastMode = "HIDING"
+				main.toastStart = GetTime()
+			else
+				t_remove(main.toastMessages, toastIndex)
+			end
+		end
+		self.powerBuilderToastActive = false
 	end
 
 	self.controls.specConvertText = new("LabelControl", { "BOTTOMLEFT", self.controls.specSelect, "TOPLEFT" }, { 0, -14, 0, 16 }, "^7This is an older tree version, which may not be fully compatible with the current game version.")
@@ -314,15 +397,42 @@ function TreeTabClass:Draw(viewPort, inputEvents)
 	self:ProcessControlsInput(inputEvents, viewPort)
 
 	-- Determine positions if one line of controls doesn't fit in the screen width
-	local twoLineHeight = 24
-	if viewPort.width >= 1336 + (self.isComparing and 198 or 0) + (self.viewer.showHeatMap and 316 or 0) then
-		twoLineHeight = 0
+	local linesHeight = 24
+	local rightMargin = 10
+	local widthFirstLineControls = self.controls.specSelect.width + 8
+								+ self.controls.compareCheck.width + self.controls.compareCheck.x
+								+ self.controls.reset.width + self.controls.reset.x
+								+ self.controls.versionText.width() + self.controls.versionText.x
+								+ self.controls.versionSelect.width + self.controls.versionSelect.x
+								+ (self.isComparing and (self.controls.compareSelect.width + self.controls.compareSelect.x) or 0)
+	
+	local widthSecondLineControls = self.controls.treeSearch.width + 8
+									+ self.controls.findTimelessJewel.width + self.controls.findTimelessJewel.x
+									+ self.controls.treeHeatMap.width + 130
+									+ self.controls.nodePowerMaxDepthSelect.width + self.controls.nodePowerMaxDepthSelect.x
+									+ (self.isCustomMaxDepth and (self.controls.nodePowerMaxDepthCustom.width + self.controls.nodePowerMaxDepthCustom.x) or 0)
+									+ (self.viewer.showHeatMap and (self.controls.treeHeatMapStatSelect.width + self.controls.treeHeatMapStatSelect.x 
+																	+ self.controls.powerReport.width + self.controls.powerReport.x) or 0)
+	
+	-- Check first line
+	if viewPort.width >= widthFirstLineControls + widthSecondLineControls + rightMargin then
+		linesHeight = 0
 		self.controls.treeSearch:SetAnchor("LEFT", self.controls.versionSelect, "RIGHT", 8, 0)
-		self.controls.powerReportList:SetAnchor("TOPLEFT", self.controls.specSelect, "BOTTOMLEFT", 0, self.controls.specSelect.height + 4)
+		self.controls.powerReportList:SetAnchor("TOPLEFT", self.controls.specSelect, "BOTTOMLEFT", 0, self.controls.specSelect.height + 6)
 	else
 		self.controls.treeSearch:SetAnchor("TOPLEFT", self.controls.specSelect, "BOTTOMLEFT", 0, 4)
-		self.controls.powerReportList:SetAnchor("TOPLEFT", self.controls.treeSearch, "BOTTOMLEFT", 0, self.controls.treeHeatMap.y + self.controls.treeHeatMap.height + 4)
+		self.controls.powerReportList:SetAnchor("TOPLEFT", self.controls.treeSearch, "BOTTOMLEFT", 0, self.controls.treeSearch.height + 6)
 	end
+
+	-- Check second line
+	if viewPort.width >= widthSecondLineControls + rightMargin then
+		self.controls.treeHeatMap:SetAnchor("LEFT", self.controls.findTimelessJewel, "RIGHT", 130, 0)
+	else
+		linesHeight = linesHeight * 2
+		self.controls.treeHeatMap:SetAnchor("TOPLEFT", self.controls.treeSearch, "BOTTOMLEFT", 124, 4)
+		self.controls.powerReportList:SetAnchor("TOPLEFT", self.controls.treeHeatMap, "BOTTOMLEFT", -124, self.controls.treeHeatMap.height + 6)
+	end
+
 	-- determine positions for convert line of controls
 	local convertTwoLineHeight = 24
 	local convertMaxWidth = 900
@@ -336,9 +446,9 @@ function TreeTabClass:Draw(viewPort, inputEvents)
 	end
 
 	local bottomDrawerHeight = self.controls.powerReportList.shown and 194 or 0
-	self.controls.specSelect.y = -bottomDrawerHeight - twoLineHeight
+	self.controls.specSelect.y = -bottomDrawerHeight - linesHeight
 
-	local treeViewPort = { x = viewPort.x, y = viewPort.y, width = viewPort.width, height = viewPort.height - (self.showConvert and 64 + bottomDrawerHeight + twoLineHeight or 32 + bottomDrawerHeight + twoLineHeight)}
+	local treeViewPort = { x = viewPort.x, y = viewPort.y, width = viewPort.width, height = viewPort.height - (self.showConvert and 64 + bottomDrawerHeight + linesHeight or 32 + bottomDrawerHeight + linesHeight)}
 	if self.jumpToNode then
 		self.viewer:Focus(self.jumpToX, self.jumpToY, treeViewPort, self.build)
 		self.jumpToNode = false
@@ -369,17 +479,17 @@ function TreeTabClass:Draw(viewPort, inputEvents)
 	SetDrawLayer(1)
 
 	SetDrawColor(0.05, 0.05, 0.05)
-	DrawImage(nil, viewPort.x, viewPort.y + viewPort.height - (28 + bottomDrawerHeight + twoLineHeight), viewPort.width, 28 + bottomDrawerHeight + twoLineHeight)
+	DrawImage(nil, viewPort.x, viewPort.y + viewPort.height - (28 + bottomDrawerHeight + linesHeight), viewPort.width, 28 + bottomDrawerHeight + linesHeight)
 	if self.showConvert then
-		local height = viewPort.width < convertMaxWidth and (bottomDrawerHeight + twoLineHeight) or 0
+		local height = viewPort.width < convertMaxWidth and (bottomDrawerHeight + linesHeight) or 0
 		SetDrawColor(0.05, 0.05, 0.05)
-		DrawImage(nil, viewPort.x, viewPort.y + viewPort.height - (60 + bottomDrawerHeight + twoLineHeight + convertTwoLineHeight), viewPort.width, 28 + height)
+		DrawImage(nil, viewPort.x, viewPort.y + viewPort.height - (60 + bottomDrawerHeight + linesHeight + convertTwoLineHeight), viewPort.width, 28 + height)
 		SetDrawColor(0.85, 0.85, 0.85)
-		DrawImage(nil, viewPort.x, viewPort.y + viewPort.height - (64 + bottomDrawerHeight + twoLineHeight + convertTwoLineHeight), viewPort.width, 4)
+		DrawImage(nil, viewPort.x, viewPort.y + viewPort.height - (64 + bottomDrawerHeight + linesHeight + convertTwoLineHeight), viewPort.width, 4)
 	end
 	-- let white lines overwrite the black sections, regardless of showConvert
 	SetDrawColor(0.85, 0.85, 0.85)
-	DrawImage(nil, viewPort.x, viewPort.y + viewPort.height - (32 + bottomDrawerHeight + twoLineHeight), viewPort.width, 4)
+	DrawImage(nil, viewPort.x, viewPort.y + viewPort.height - (32 + bottomDrawerHeight + linesHeight), viewPort.width, 4)
 
 	self:DrawControls(viewPort)
 end
@@ -608,6 +718,7 @@ function TreeTabClass:OpenImportPopup()
 	local function decodeTreeLink(treeLink, newTreeVersion)
 		-- newTreeVersion is passed in as an output of validateTreeVersion(). It will always be a valid tree version text string
 		-- 20230908. We always create a new Spec()
+		ConPrintf("Tree version: " .. newTreeVersion)
 		local newSpec = new("PassiveSpec", self.build, newTreeVersion)
 		newSpec.title = controls.name.buf
 		local errMsg = newSpec:DecodeURL(treeLink)
@@ -682,7 +793,7 @@ function TreeTabClass:OpenImportPopup()
 						controls.import.enabled = true
 						return
 					else
-						decodeTreeLink(treeLink, validateTreeVersion(treeLink:match("tree/(%w+%-?%w*)"), treeLink:match(versionLookup)))
+						decodeTreeLink(treeLink, validateTreeVersion(treeLink:match("tree/(%l+%-?%l*)"), treeLink:match(versionLookup)))
 					end
 				end)
 			end
@@ -691,14 +802,14 @@ function TreeTabClass:OpenImportPopup()
 		elseif treeLink:match("poeskilltree.com/") then
 			local oldStyleVersionLookup = "/%?v=([0-9]+)%.([0-9]+)%.([0-9]+)%-?%w?%-?%w?#"
 			-- Strip the version from the tree : https://poeskilltree.com/?v=3.6.0#AAAABAMAABEtfIOFMo6-ksHfsOvu -> https://poeskilltree.com/AAAABAMAABEtfIOFMo6-ksHfsOvu
-			decodeTreeLink(treeLink:gsub("/%?v=.+#","/"), validateTreeVersion(treeLink:match("%-(%w+%-?%w*)#"), treeLink:match(oldStyleVersionLookup)))
+			decodeTreeLink(treeLink:gsub("/%?v=.+#","/"), validateTreeVersion(treeLink:match("%-(%l+%-?%l*)#"), treeLink:match(oldStyleVersionLookup)))
 		else
 			-- EG: https://www.pathofexile.com/passive-skill-tree/3.15.0/AAAABgMADI6-HwKSwQQHLJwtH9-wTLNfKoP3ES3r5AAA
 			-- EG: https://www.pathofexile.com/fullscreen-passive-skill-tree/3.15.0/AAAABgMADAQHES0fAiycLR9Ms18qg_eOvpLB37Dr5AAA
 			-- EG: https://www.pathofexile.com/passive-skill-tree/ruthless/AAAABgAAAAAA (Ruthless doesn't have versions)
 			-- EG: https://www.pathofexile.com/passive-skill-tree/ruthless-alternate/AAAABgAAAAAA
 			-- EG: https://www.pathofexile.com/passive-skill-tree/alternate/AAAABgAAAAAA
-			decodeTreeLink(treeLink, validateTreeVersion(treeLink:match("tree/(%w+%-?%w*)"), treeLink:match(versionLookup)))
+			decodeTreeLink(treeLink, validateTreeVersion(treeLink:match("tree/(%l+%-?%l*)"), treeLink:match(versionLookup)))
 		end
 	end)
 	controls.import.enabled = false
@@ -745,12 +856,12 @@ function TreeTabClass:ModifyNodePopup(selectedNode)
 	local function buildMods(selectedNode)
 		wipeTable(modGroups)
 		local numLinkedNodes = selectedNode.linkedId and #selectedNode.linkedId or 0
-		local nodeValue = treeNodes[selectedNode.id].sd[1]
+		local nodeValue = treeNodes[selectedNode.id].sd[1] or ""
 		for id, node in pairs(self.build.spec.tree.tattoo.nodes) do
 			if (nodeName:match(node.targetType:gsub("^Small ", "")) or (node.targetValue ~= "" and nodeValue:match(node.targetValue)) or
 					(node.targetType == "Small Attribute" and (nodeName == "Intelligence" or nodeName == "Strength" or nodeName == "Dexterity"))
 					or (node.targetType == "Keystone" and treeNodes[selectedNode.id].type == node.targetType))
-					and node.MinimumConnected <= numLinkedNodes and (node.legacy == false or node.legacy == self.showLegacyTattoo) then
+					and node.MinimumConnected <= numLinkedNodes and ((node.legacy == nil or node.legacy == false) or node.legacy == self.showLegacyTattoo) then
 				local combine = false
 				for id, desc in pairs(node.stats) do
 					combine = (id:match("^local_display.*") and #node.stats == (#node.sd - 1)) or combine
@@ -824,6 +935,7 @@ function TreeTabClass:ModifyNodePopup(selectedNode)
 	end
 	controls.save = new("ButtonControl", nil, {-90, 75, 80, 20}, "Add", function()
 		addModifier(selectedNode)
+		self.build.spec:AddUndoState()
 		self.modFlag = true
 		self.build.buildFlag = true
 		self.defaultTattoo[nodeName] = controls.modSelect.selIndex
@@ -831,8 +943,10 @@ function TreeTabClass:ModifyNodePopup(selectedNode)
 	end)
 	controls.reset = new("ButtonControl", nil, {0, 75, 80, 20}, "Reset Node", function()
 		self:RemoveTattooFromNode(selectedNode)
+		self.build.spec:AddUndoState()
 		self.modFlag = true
 		self.build.buildFlag = true
+		self.defaultTattoo[nodeName] = nil
 		main:ClosePopup()
 	end)
 	controls.close = new("ButtonControl", nil, {90, 75, 80, 20}, "Cancel", function()
@@ -842,7 +956,7 @@ function TreeTabClass:ModifyNodePopup(selectedNode)
 	local function getTattooCount()
 		local count = 0
 		for _, node in pairs(self.build.spec.hashOverrides) do
-			if node.isTattoo then
+			if node.isTattoo and not node.dn:find("Runegraft") then
 				count = count + 1
 			end
 		end
@@ -1862,6 +1976,17 @@ function TreeTabClass:FindTimelessJewel()
 		tooltip:Clear()
 		tooltip:AddLine(16, "^7Click this button to generate new fallback node weights, replacing your old ones.")
 	end
+	controls.totalMinimumWeightLabel = new("LabelControl", {"TOPRIGHT", nil, "TOPLEFT"}, {405, 250, 0, 16}, "^7Total Minimum Weight:")
+	controls.totalMinimumWeight = new("EditControl", {"LEFT", controls.totalMinimumWeightLabel, "RIGHT"}, {10, 0, 60, 18}, "", nil, "%D", nil, function(val)
+		local num = tonumber(val)
+		timelessData.totalMinimumWeight = num or nil
+		self.build.modFlag = true
+	end)
+	controls.totalMinimumWeight.tooltipFunc = function(tooltip, mode, index, value)
+		tooltip:Clear()
+		tooltip:AddLine(16, "^7Optional: Only show results where total weight meets or exceeds this value.")
+	end
+	
 
 	controls.searchListButton = new("ButtonControl", {"TOPLEFT", nil, "TOPLEFT"}, {12, 250, 106, 20}, "^7Desired Nodes", function()
 		if controls.searchListFallback.shown then
@@ -1910,7 +2035,7 @@ function TreeTabClass:FindTimelessJewel()
 	controls.searchListFallback.enabled = false
 	controls.searchListFallback:SetText(timelessData.searchListFallback and timelessData.searchListFallback or "")
 
-	controls.searchResultsLabel = new("LabelControl", { "TOPLEFT", nil, "TOPRIGHT" }, { -450, 250, 0, 16 }, "^7Search Results:")
+	controls.searchResultsLabel = new("LabelControl", { "TOPLEFT", nil, "TOPRIGHT" }, { -390, 250, 0, 16 }, "^7Results:")
 	controls.searchResults = new("TimelessJewelListControl", { "TOPLEFT", nil, "TOPRIGHT" }, { -450, 275, 438, 200 }, self.build)
 	controls.searchTradeLeagueSelect = new("DropDownControl", { "BOTTOMRIGHT", controls.searchResults, "TOPRIGHT" }, { -175, -5, 140, 20 }, nil, function(_, value)
 		self.timelessJewelLeagueSelect = value
@@ -2003,7 +2128,7 @@ function TreeTabClass:FindTimelessJewel()
 		local search = {
 			query = {
 				status = {
-					option = "online"
+					option = "available"
 				},
 				stats = {
 					{
@@ -2305,7 +2430,9 @@ function TreeTabClass:FindTimelessJewel()
 			end
 			local searchResultsIdx = 1
 			for seedMatch, seedData in pairs(resultNodes) do
-				if seedWeights[seedMatch] > 0 then
+				-- filter out the results so that only the ones that beat the total minimum weight parameter remain in search results
+				local passesMin = (not timelessData.totalMinimumWeight) or (seedWeights[seedMatch] >= timelessData.totalMinimumWeight)
+				if seedWeights[seedMatch] > 0 and passesMin then
 					timelessData.searchResults[searchResultsIdx] = { label = seedMatch .. ":" }
 					if timelessData.jewelType.id == 1 or timelessData.jewelType.id == 3 then
 						-- Glorious Vanity [100-8000], Brutal Restraint [500-8000]

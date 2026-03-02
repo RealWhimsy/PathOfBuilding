@@ -74,6 +74,7 @@ your maximum number of Crab Barriers
 Kaom's Spirit
 Titan Gauntlets
 Variant: Pre 3.23.0
+Variant: Pre 3.26.0
 Variant: Current
 +(50-70) to Maximum Life
 +(20-30)% to Fire Resistance
@@ -81,6 +82,7 @@ Variant: Current
 Life Recovery from Regeneration is not applied
 {variant:1}Regenerate 1 Rage per second for every 100 Life Recovery per second from Regeneration
 {variant:2}Regenerate 1 Rage per second for every 300 Life Recovery per second from Regeneration
+{variant:3}Regenerate 1 Rage per second for every 200 Life Recovery per second from Regeneration
 Does not delay Inherent Loss of Rage
 ]],[[
 Doryani's Fist
@@ -264,12 +266,15 @@ Requires Level 21, 33 Dex
 Mercenary's Lot
 Slink Gloves
 League: Heist
+Variant: Pre 3.26.0
+Variant: Current
 Requires Level 70, 95 Dex
 +(80-120) to Evasion Rating
 (5-8)% increased Attack and Cast Speed
 Mark Skills have (10-15)% increased Cast Speed
 (30-50)% increased Damage with Hits and Ailments against Marked Enemy
 Your Mark transfers to another Enemy when Marked Enemy dies
+{variant:2}8% of Damage from Hits is taken from Marked Target's Life before you
 ]],[[
 Oskarm
 Nubuck Gloves
@@ -300,8 +305,10 @@ Allelopathy
 {variant:1}Sorcerer Gloves
 {variant:2}Satin Gloves
 Variant: Pre 3.19.0
+Variant: Pre 3.26.0
 Variant: Current
-Grants Level 22 Blight Skill
+{variant:1,2}Grants Level 22 Blight Skill
+{variant:3}Grants Level 25 Blight Skill
 {variant:1}(20-30)% increased Damage over Time
 (100-120)% increased Energy Shield
 10% increased Area of Effect of Area Skills
@@ -312,10 +319,12 @@ Replica Allelopathy
 {variant:1}Sorcerer Gloves
 {variant:2}Satin Gloves
 Variant: Pre 3.19.0
+Variant: Pre 3.26.0
 Variant: Current
 League: Heist
 Source: Steal from a unique{Curio Display} during a Grand Heist
-Grants Level 22 Wintertide Brand
+{variant:1,2}Grants Level 22 Wintertide Brand
+{variant:3}Grants Level 25 Wintertide Brand
 {variant:1}(20-30)% increased Damage over Time
 (100-120)% increased Energy Shield
 10% increased Area of Effect
@@ -647,14 +656,17 @@ Command of the Pit
 Riveted Gloves
 League: Delve
 Source: Drops from unique{Kurgal, the Blackblooded}
+Variant: Pre 3.27.0 One Abyssal Socket
+Variant: Pre 3.27.0 Two Abyssal Sockets
 Variant: One Abyssal Socket
 Variant: Two Abyssal Sockets
 Requires Level 37, 29 Str, 29 Int
-{variant:1}Has 1 Abyssal Socket
-{variant:2}Has 2 Abyssal Sockets
+{variant:1,3}Has 1 Abyssal Socket
+{variant:2,4}Has 2 Abyssal Sockets
 (6-10)% increased Cast Speed
 (4-6)% increased maximum Life
-With a Ghastly Eye Jewel Socketed, Minions have +1000 to Accuracy Rating
+{variant:1,2}With a Ghastly Eye Jewel Socketed, Minions have +1000 to Accuracy Rating
+{variant:3,4}With a Ghastly Eye Jewel Socketed, Minions have 25% chance to gain Unholy Might on Hit with Spells
 With a Hypnotic Eye Jewel Socketed, gain Arcane Surge on Hit with Spells
 ]],[[
 The Hand of Phrecia
@@ -830,6 +842,16 @@ Adds (17-23) to (29-31) Chaos Damage
 Your Chaos Damage can Ignite
 Chaos Skills have 20% chance to Ignite
 50% less Ignite Duration
+]],[[
+Hand of Heresy
+Martyr Gloves
+Source: Drops from unique{Mercenary} after winning a duel
+League: Mercenaries of Trarthus
+Requires Level 77, 70 Str, 70 Int
+(40-80)% increased Armour and Energy Shield
+(15-25)% increased Life Regeneration rate
+15% increased Area of Effect of Aura Skills
+Excommunicate Enemies on Melee Hit for 3 seconds
 ]],
 -- Gloves: Evasion/Energy Shield
 [[
@@ -935,15 +957,17 @@ Variant: Pre 1.0.0
 Variant: Pre 2.2.0
 Variant: Pre 2.5.0
 Variant: Pre 3.0.0
+Variant: Pre 3.26.0
 Variant: Current
 Requires Level 16, 14 Dex, 14 Int
 {variant:1,2}+60% to Global Critical Strike Multiplier
 {variant:3}+90% to Global Critical Strike Multiplier
 {variant:4}+45% to Global Critical Strike Multiplier
-{variant:5}+30% to Global Critical Strike Multiplier
+{variant:5,6}+30% to Global Critical Strike Multiplier
 10% reduced Enemy Stun Threshold
 {variant:1}(800-1000)% more Unarmed Physical Damage
 {variant:2,3,4,5}(600-800)% more Physical Damage with Unarmed Melee Attacks
+{variant:6}(600-1000)% more Physical Damage with Unarmed Melee Attacks
 Extra gore
 ]],[[
 Fenumus' Weave
@@ -1000,8 +1024,8 @@ Murder Mitts
 Requires Level 67, 51 Dex, 51 Int
 (80-100)% increased Evasion and Energy Shield
 +(60-80) to maximum Life
-Gain (15-25) Life per Enemy Killed
-Gain (15-25) Energy Shield per Enemy Killed
+Gain (15-25) Life per Enemy Hit with Attacks
+Gain (15-25) Energy Shield per Enemy Hit with Attacks
 Grants Malachai's Endurance, Frenzy and Power for 6 seconds each, in sequence
 ]],[[
 Shadows and Dust
@@ -1044,7 +1068,7 @@ Requires Level 58, 45 Dex, 45 Int
 (250-300)% increased Evasion and Energy Shield
 +(20-30)% to Lightning Resistance
 Enemies you kill are Shocked
-Shocks you inflict spread to other Enemies within a Radius of 15
+Shocks you inflict spread to other Enemies within 1.5 metres
 ]],[[
 Thunderfist
 Murder Mitts
@@ -1098,5 +1122,4 @@ Requires Level 48, 31 Str, 31 Dex, 31 Int
 {variant:2}Gain Added Chaos Damage equal to 20% of Ward
 {variant:3}Gain Added Chaos Damage equal to 10% of Ward
 75% of Damage taken bypasses Ward
-]],
-}
+]],}

@@ -121,6 +121,11 @@ local skillTypes = {
 	"NoVolley",
 	"Retaliation",
 	"NeverExertable",
+	"DisallowTriggerSupports",
+	"ProjectileCannotReturn",
+	"Offering",
+	"SupportedByBane",
+	"WandAttack",
 }
 
 -- This is here to fix name collisions like in the case of Barrage
@@ -247,6 +252,7 @@ directiveTable.skill = function(state, args, out)
 	skill.levels = { }
 	local statMap = { }
 	skill.stats = { }
+	skill.CannotGrantToMinion = { }
 	skill.constantStats = { }
 	skill.addSkillTypes = state.addSkillTypes
 	state.addSkillTypes = nil
@@ -300,7 +306,7 @@ directiveTable.skill = function(state, args, out)
 		end
 		if next(weaponTypes) then
 			out:write('\tweaponTypes = {\n')
-			for type in pairs(weaponTypes) do
+			for type in pairsSortByKey(weaponTypes) do
 				out:write('\t\t["', type, '"] = true,\n')
 			end
 			out:write('\t},\n')
@@ -308,7 +314,7 @@ directiveTable.skill = function(state, args, out)
 		out:write('\tstatDescriptionScope = "gem_stat_descriptions",\n')
 	else
 		if #granted.ActiveSkill.Description > 0 then
-			out:write('\tdescription = "', granted.ActiveSkill.Description:gsub('"','\\"'):gsub('\n','\\n'), '",\n')
+			out:write('\tdescription = "', granted.ActiveSkill.Description:gsub('"','\\"'):gsub('\r',''):gsub('\n','\\n'), '",\n')
 		end
 		out:write('\tskillTypes = { ')
 		for _, type in ipairs(granted.ActiveSkill.SkillTypes) do
@@ -335,7 +341,7 @@ directiveTable.skill = function(state, args, out)
 		end
 		if next(weaponTypes) then
 			out:write('\tweaponTypes = {\n')
-			for type in pairs(weaponTypes) do
+			for type in pairsSortByKey(weaponTypes) do
 				out:write('\t\t["', type, '"] = true,\n')
 			end
 			out:write('\t},\n')
@@ -426,6 +432,9 @@ directiveTable.skill = function(state, args, out)
 				table.insert(skill.stats, { id = stat.Id })
 				if indx == 1 then
 					table.insert(statMapOrder, stat.Id)
+					if stat.CannotGrantToMinion then
+						table.insert(skill.CannotGrantToMinion, stat.Id)
+					end
 				else
 					print(displayName .. ": stat missing from earlier levels: ".. stat.Id)
 				end
@@ -478,6 +487,9 @@ directiveTable.skill = function(state, args, out)
 				table.insert(skill.stats, { id = stat.Id })
 				if indx == 1 then
 					table.insert(statMapOrder, stat.Id)
+					if stat.CannotGrantToMinion then
+						table.insert(skill.CannotGrantToMinion, stat.Id)
+					end
 				else
 					print(displayName .. ": stat missing from earlier levels: ".. stat.Id)
 				end
@@ -498,6 +510,9 @@ directiveTable.skill = function(state, args, out)
 			if not statMap[stat.Id] then
 				statMap[stat.Id] = #skill.stats + 1
 				table.insert(skill.stats, { id = stat.Id })
+				if stat.CannotGrantToMinion then
+					table.insert(skill.CannotGrantToMinion, stat.Id)
+				end
 			end
 		end
 		table.insert(skill.levels, level)
@@ -594,6 +609,13 @@ directiveTable.mods = function(state, args, out)
 			out:write('\t\t"', stat.id, '",\n')
 		end
 		out:write('\t},\n')
+		if next(skill.CannotGrantToMinion) then
+			out:write('\tnotMinionStat = {\n')
+			for _, stat in ipairs(skill.CannotGrantToMinion) do
+				out:write('\t\t"', stat, '",\n')
+			end
+			out:write('\t},\n')
+		end
 	end
 	if not args:match("noLevels") then
 		out:write('\tlevels = {\n')
@@ -602,7 +624,7 @@ directiveTable.mods = function(state, args, out)
 			for _, statVal in ipairs(level) do
 				out:write(tostring(statVal), ', ')
 			end
-			for k, v in pairs(level.extra) do
+			for k, v in pairsSortByKey(level.extra) do
 				out:write(k, ' = ', tostring(v), ', ')
 			end
 			if next(level.statInterpolation) ~= nil then
@@ -614,7 +636,7 @@ directiveTable.mods = function(state, args, out)
 			end
 			if next(level.cost) ~= nil then
 				out:write('cost = { ')
-				for k, v in pairs(level.cost) do
+				for k, v in pairsSortByKey(level.cost) do
 					out:write(k, ' = ', tostring(v), ', ')
 				end
 				out:write('}, ')

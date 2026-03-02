@@ -185,25 +185,33 @@ Skills Chain +1 times
 ]],[[
 Nebulis
 Void Sceptre
+Variant: Pre 3.27.0
+Variant: Current
 League: Synthesis
 Source: Drops from unique{Synthete Nightmare} in normal{The Cortex} (Uber)
 Requires Level 68, 104 Str, 122 Int
 Implicits: 1
 40% increased Elemental Damage
-{fractured}(15-20)% increased Cast Speed
-(15-20)% increased Cold Damage per 1% Cold Resistance above 75%
-(15-20)% increased Lightning Damage per 1% Lightning Resistance above 75%
+{variant:2}(80-120)% increased Implicit Modifier magnitudes
+(15-20)% increased Cast Speed
+{variant:1}(15-20)% increased Cold Damage per 1% Cold Resistance above 75%
+{variant:1}(15-20)% increased Lightning Damage per 1% Lightning Resistance above 75%
+{variant:2}(5-10)% increased Elemental Damage per 1% Fire, Cold, or Lightning Resistance above 75%
 ]],[[
 Replica Nebulis
 Void Sceptre
+Variant: Pre 3.27.0
+Variant: Current
 League: Heist
 Source: Steal from a unique{Curio Display} during a Grand Heist
 Requires Level 68, 104 Str, 122 Int
 Implicits: 1
 40% increased Elemental Damage
-{fractured}(15-20)% increased Cast Speed
-(15-20)% increased Cold Damage per 1% Missing Cold Resistance, up to a maximum of 300%
-(15-20)% increased Fire Damage per 1% Missing Fire Resistance, up to a maximum of 300%
+{variant:2}(80-120)% increased Implicit Modifier magnitudes
+(15-20)% increased Cast Speed
+{variant:1}(15-20)% increased Cold Damage per 1% Missing Cold Resistance, up to a maximum of 300%
+{variant:1}(15-20)% increased Fire Damage per 1% Missing Fire Resistance, up to a maximum of 300%
+{variant:2}(10-15)% increased Elemental Damage per 1% Missing Fire, Cold, or Lightning Resistance, up to a maximum of 450%
 ]],[[
 Nebuloch
 Nightmare Mace
@@ -214,12 +222,12 @@ Variant: Current
 Requires Level 68, 212 Str
 Implicits: 1
 10% reduced Enemy Stun Threshold
-Adds (45-60) to (100-120) Physical Damage 
-Gain (30-40)% of Physical Attack Damage as Extra Fire Damage 
-+4% to Chaos Resistance per Endurance Charge 
-1% reduced Elemental Damage taken from Hits per Endurance Charge 
-Adds 5 to 8 Physical Damage per Endurance Charge 
-+500 to Armour per Endurance Charge 
+Adds (45-60) to (100-120) Physical Damage
+Gain (30-40)% of Physical Attack Damage as Extra Fire Damage
++4% to Chaos Resistance per Endurance Charge
+1% reduced Elemental Damage taken from Hits per Endurance Charge
+Adds 5 to 8 Physical Damage per Endurance Charge
++500 to Armour per Endurance Charge
 {variant:1}400 Fire Damage taken per second per Endurance Charge if you've been Hit Recently
 {variant:2}200 Fire Damage taken per second per Endurance Charge if you've been Hit Recently
 ]],
@@ -232,12 +240,12 @@ Variant: Pre 3.5.0
 Variant: Current
 Requires Level 68, 104 Str, 122 Int
 Implicits: 1
-40% increased Elemental Damage 
-(180-200)% increased Physical Damage 
-(10-15)% increased Attack Speed 
-(80-100)% increased Critical Strike Chance 
-50% of Physical Damage Converted to Lightning Damage 
-Every 16 seconds you gain Elemental Overload for 8 seconds 
+40% increased Elemental Damage
+(180-200)% increased Physical Damage
+(10-15)% increased Attack Speed
+(80-100)% increased Critical Strike Chance
+50% of Physical Damage Converted to Lightning Damage
+Every 16 seconds you gain Elemental Overload for 8 seconds
 You have Resolute Technique while you do not have Elemental Overload
 {variant:2}100% increased Physical Damage while you have Resolute Technique
 ]],[[
@@ -261,7 +269,7 @@ Requires Level 60, 95 Str, 131 Int
 Implicits: 1
 40% increased Elemental Damage
 Grants Level 25 Scorching Ray Skill
-(12-20)% increased Cast Speed 
+(12-20)% increased Cast Speed
 Recover (1-3)% of Life on Kill
 Recover (1-3)% of Mana on Kill
 10% increased Scorching Ray beam length
@@ -464,6 +472,7 @@ Variant: Pre 3.25.0
 Variant: Current
 Requires Level 56, 96 Str, 96 Int
 Implicits: 1
+26% increased Elemental Damage
 +(30-40) to Intelligence
 {variant:1}(25-50)% increased Critical Strike Chance
 {variant:2}(15-30)% increased Critical Strike Chance
@@ -590,28 +599,42 @@ Implicits: 1
 (6-8)% reduced Soul Gain Prevention Duration
 Gain an Endurance Charge, Frenzy Charge, and Power Charge when you use a Vaal Skill
 Shepherd of Souls
+]],[[
+Cadigan's Authority
+Platinum Sceptre
+Source: Obtained from unique{Shipping} in normal{Kingsmarch}
+Requires Level 62, 113 Str, 113 Int
+Implicits: 1
+30% increased Elemental Damage
+Adds (60-85) to (100-133) Physical Damage
++(3-5) to maximum number of Summoned Totems
+You cannot have more than 2 Summoned Totems of the same type
+(40-70)% increased Totem Placement speed
+Battlemage
 ]],
 -- Weapon: Two Handed Mace
 [[
-Brain Rattler 
+Brain Rattler
 Meatgrinder
 Variant: Pre 2.6.0
 Variant: Pre 3.11.0
+Variant: Pre 3.26.0
 Variant: Current
 Implicits: 3
 {variant:1}20% increased Stun Duration on Enemies
 {variant:2}30% increased Stun Duration on Enemies
-{variant:3}5% chance to deal Double Damage
+{variant:3,4}5% chance to deal Double Damage
 {variant:1,2}Adds (80-100) to (320-370) Physical Damage
 {variant:3}Adds (60-80) to (270-320) Physical Damage
+{variant:4}Adds (100-130) to (360-430) Physical Damage
 50% of Physical Damage Converted to Lightning Damage
 {variant:1,2}15% chance to Shock
-{variant:3}50% chance to Shock
+{variant:3,4}50% chance to Shock
 {variant:1,2}10% chance to Cause Monsters to Flee
 Damage Penetrates 20% Lightning Resistance
 Enemies you Shock have 30% reduced Cast Speed
 Enemies you Shock have 20% reduced Movement Speed
-{variant:3}Hits with this Weapon Shock Enemies as though dealing 300% more Damage
+{variant:3,4}Hits with this Weapon Shock Enemies as though dealing 300% more Damage
 ]],[[
 Chober Chaber
 Great Mallet
@@ -818,7 +841,7 @@ League: Settlers of Kalguur
 Requires Level 53, 170 Str
 Implicits: 1
 10% reduced Enemy Stun Threshold
-+(30-40) to Strength 
++(30-40) to Strength
 +(30-40) to Dexterity
 (150-250)% increased Physical Damage
 +(400-500) to Accuracy Rating
@@ -888,5 +911,4 @@ Implicits: 2
 (30-50)% reduced Rarity of Items found
 (30-50)% reduced Experience gain
 0.4% of Physical Attack Damage Leeched as Mana
-]],
-}
+]],}

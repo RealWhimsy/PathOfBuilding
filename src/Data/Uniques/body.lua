@@ -358,16 +358,18 @@ Source: Steal from a unique{Curio Display} during a Grand Heist
 Kintsugi
 Exquisite Leather
 Variant: Pre 3.19.0
+Variant: Pre 3.26.0
 Variant: Current
 Implicits: 0
 {variant:1}(100-120)% increased Evasion Rating
 {variant:2}(120-160)% increased Evasion Rating
+{variant:3}(160-220)% increased Evasion Rating
 {variant:1}+(60-80) to maximum Life
 +30% to Fire Resistance
 {variant:1}20% less Damage taken if you have not been Hit Recently
-{variant:2}35% less Damage taken if you have not been Hit Recently
+{variant:2,3}35% less Damage taken if you have not been Hit Recently
 {variant:1}50% increased Evasion Rating if you have been Hit Recently
-{variant:2}100% increased Evasion Rating if you have been Hit Recently
+{variant:2,3}100% increased Evasion Rating if you have been Hit Recently
 ]],[[
 Queen of the Forest
 Destiny Leather
@@ -472,23 +474,32 @@ Implicits: 0
 ]],[[
 Yriel's Fostering
 Exquisite Leather
-Variant: Rhoa
-Variant: Snake
-Variant: Ursa
+Variant: Rhoa Pre 3.26
+Variant: Snake Pre 3.26
+Variant: Ursa Pre 3.26
+Variant: Rhoa Current
+Variant: Snake Current
+Variant: Ursa Current
 Implicits: 0
-{variant:1}Grants Level 20 Summon Bestial Rhoa Skill
-{variant:2}Grants Level 20 Summon Bestial Snake Skill
-{variant:3}Grants Level 20 Summon Bestial Ursa Skill
+{variant:1,4}Grants Level 20 Summon Bestial Rhoa Skill
+{variant:2,5}Grants Level 20 Summon Bestial Snake Skill
+{variant:3,6}Grants Level 20 Summon Bestial Ursa Skill
 +(300-400) to Accuracy Rating
 (130-150)% increased Evasion Rating
 +(90-100) to maximum Life
 Projectile Attack Skills have (40-60)% increased Critical Strike Chance
 {variant:1}Projectiles from Attacks have 20% chance to Maim on Hit while you have a Bestial Minion
+{variant:4}Projectiles from Attacks have 100% chance to Maim on Hit while you have a Bestial Minion
 {variant:2}Projectiles from Attacks have 20% chance to Poison on Hit while you have a Bestial Minion
+{variant:5}Projectiles from Attacks have 100% chance to Poison on Hit while you have a Bestial Minion
 {variant:3}Projectiles from Attacks have 20% chance to inflict Bleeding on Hit while you have a Bestial Minion
+{variant:6}Projectiles from Attacks have 100% chance to inflict Bleeding on Hit while you have a Bestial Minion
 {variant:1}(10-15)% increased Attack and Movement Speed while you have a Bestial Minion
+{variant:4}(10-20)% increased Attack and Movement Speed while you have a Bestial Minion
 {variant:2}Adds (13-19)-(23-29) Chaos Damage to Attacks while you have a Bestial Minion
+{variant:5}Adds (18-24)-(30-36) Chaos Damage to Attacks while you have a Bestial Minion
 {variant:3}Adds (11-16)-(21-25) Physical Damage to Attacks while you have a Bestial Minion
+{variant:6}Adds (23-31)-(37-47) Physical Damage to Attacks while you have a Bestial Minion
 ]],
 -- Body: Energy Shield
 [[
@@ -818,21 +829,23 @@ Variant: Pre 2.6.0
 Variant: Pre 3.5.0
 Variant: Pre 3.16.0
 Variant: Pre 3.19.0
+Variant: Pre 3.26.0
 Variant: Current
 Implicits: 0
 {variant:1,2,3}(160-200)% increased Armour and Evasion
-{variant:4,5}(180-220)% increased Armour and Evasion
+{variant:4,5,6}(180-220)% increased Armour and Evasion
 {variant:1,2}+(40-60) to maximum Life
-{variant:3,4,5}+(60-90) to maximum Life
+{variant:3,4,5,6}+(60-90) to maximum Life
 {variant:1,2,3,4}(0.4-0.6)% of Physical Attack Damage Leeched as Life
 {variant:5}2% of Physical Attack Damage Leeched as Life
+{variant:6}2% of Attack Damage Leeched as Life
 You lose all Endurance Charges when Hit
 You gain an Endurance Charge on Kill
 {variant:1}You gain Onslaught for 1 seconds per Endurance Charge when Hit
 {variant:2}You gain Onslaught for 2 seconds per Endurance Charge when Hit
-{variant:3,4,5}You gain Onslaught for 5 seconds per Endurance Charge when Hit
+{variant:3,4,5,6}You gain Onslaught for 5 seconds per Endurance Charge when Hit
 {variant:3,4}(60-100)% increased Onslaught Effect
-{variant:5}100% increased Onslaught Effect
+{variant:5,6}100% increased Onslaught Effect
 ]],[[
 Farrul's Fur
 Triumphant Lamellar
@@ -948,7 +961,7 @@ Trigger Level 20 Animate Guardian's Weapon when Animated Guardian Kills an Enemy
 Animated Guardian deals 5% increased Damage per Animated Weapon
 Animated Minions' Melee Attacks deal Splash Damage to surrounding targets
 Animated Minions' Melee Attacks deal 50% less Damage to surrounding targets
-You cannot have non-Animated Minions
+You cannot have Non-Animated, Non-Manifested Minions
 ]],[[
 Doryani's Prototype
 Saint's Hauberk
@@ -1115,12 +1128,16 @@ Sporeguard
 Saint's Hauberk
 League: Blight
 Source: Drops in Blighted Maps
+Variant: Pre 3.26.0
+Variant: Current
 Implicits: 0
 Trigger Level 10 Contaminate when you Kill an Enemy
 (200-250)% increased Armour and Energy Shield
 (7-10)% increased maximum Life
-+(17-23)% to Chaos Resistance
-Enemies on Fungal Ground you Kill Explode, dealing 5% of their Life as Chaos Damage
+{variant:1}+(17-23)% to Chaos Resistance
+{variant:2}+(29-43)% to Chaos Resistance
+{variant:1}Enemies on Fungal Ground you Kill Explode, dealing 5% of their Life as Chaos Damage
+{variant:2}Enemies on Fungal Ground you Kill Explode, dealing 10% of their Life as Chaos Damage
 You have Fungal Ground around you while stationary
 This item can be anointed by Cassia
 ]],[[
@@ -1361,6 +1378,28 @@ Socketed Gems have 45% increased Reservation Efficiency
 {variant:1}(10-20)% increased Area of Effect of Aura Skills
 {variant:2}(20-40)% increased Area of Effect of Aura Skills
 (10-15)% increased effect of Non-Curse Auras from your Skills
+]],[[
+Servant of Decay
+Torturer Garb
+Source: Drops from unique{Incarnation of Fear} in normal{Moment of Trauma}
+Requires Level 78, 151 Dex, 151 Int
+Trigger Level 20 Summon Void Spawn every 4 seconds
+(150-200)% increased Energy Shield
++(23-37)% to Chaos Resistance
+(4-6)% of Damage from Hits is taken from Void Spawns' Life before you per Void Spawn
+Gain (4-6)% of Non-Chaos Damage as Extra Chaos Damage per Summoned Void Spawn
+]],[[
+Seven Teachings
+Waxed Garb
+Source: Drops from unique{Incarnation of Dread} in normal{Moment of Reverence}
+Requires Level 77, 48 Dex, 48 Int
+Trigger a Socketed Spell on Unarmed Melee Critical Strike, with a 0.25 second Cooldown
+(1-7)% more Attack Speed with Unarmed Melee Attacks
+(100-777)% increased Evasion and Energy Shield
+(1-7)% increased Movement Speed
++(0.1-0.7) metres to Melee Strike Range with Unarmed Attacks
++(1-7)% to Unarmed Melee Attack Critical Strike Chance
++(10-77)% to Critical Strike Multiplier with Unarmed Melee Attack
 ]],
 -- Body: Armour/Evasion/Energy Shield
 [[
@@ -1368,11 +1407,15 @@ The Admiral
 Varnished Coat
 League: Heist
 Source: Drops from unique{Admiral Darnaw} in normal{Contract: Death to Darnaw}
+Variant: Pre 3.26.0
+Variant: Current
 Implicits: 0
 +(30-40) to Intelligence
-(100-140)% increased Evasion and Energy Shield
+{variant:1}(100-140)% increased Evasion and Energy Shield
+{variant:2}(120-200)% increased Evasion and Energy Shield
 +(10-20)% to all Elemental Resistances
-(5-10)% chance to Freeze, Shock and Ignite
+{variant:1}(5-10)% chance to Freeze, Shock and Ignite
+{variant:2}(10-25)% chance to Freeze, Shock and Ignite
 Elemental Damage you Deal with Hits is Resisted by lowest Elemental Resistance instead
 ]],[[
 Atziri's Splendour
