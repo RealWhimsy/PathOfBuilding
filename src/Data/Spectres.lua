@@ -4,8 +4,10 @@
 -- Spectre Data
 -- Monster data (c) Grinding Gear Games
 --
-local minions, mod, flag = ...
 
+return function(mod, flag)
+	---@class SpectreData
+	local minions = {}
 -- Blackguard
 minions["Metadata/Monsters/Axis/AxisCaster"] = {
 	name = "Blackguard Mage",
@@ -2889,6 +2891,33 @@ minions["Metadata/Monsters/Undying/UndyingOutcastWhirlingBlades"] = {
 	modList = {
 	},
 }
+-- Unholy Aberration
+minions["Metadata/Monsters/SpiderPlated/SpiderPlatedUnholyEmerge"] = {
+	name = "Unholy Aberration",
+	monsterTags = { "animal_claw_weapon", "beast", "flesh_armour", "insect_blood", "is_unarmed", "medium_height", "medium_movement", "melee", "physical_affinity", "spider", },
+	life = 14,
+	fireResist = 0,
+	coldResist = 0,
+	lightningResist = 0,
+	chaosResist = 0,
+	damage = 1.6,
+	damageSpread = 0.2,
+	attackTime = 1.95,
+	attackRange = 18,
+	accuracy = 1,
+	skillList = {
+		"Melee",
+	},
+	modList = {
+		-- MonsterNoDropsOrExperience [monster_no_drops_or_experience = 1]
+		-- CannotBeAugmented [cannot_have_azmeri_dust = 1]
+		-- CannotBeAugmented [cant_possess_this = 1]
+		-- CannotBeAugmented [cant_touch_this = 1]
+		-- CannotBeAugmented [cannot_be_tagged_by_sentinel = 1]
+		-- CannotBeAugmented [cannot_be_afflicted = 1]
+		-- CannotBeAugmented [cannot_have_affliction_mods = 1]
+	},
+}
 -- Wicker Man
 minions["Metadata/Monsters/WickerMan/WickerMan"] = {
 	name = "Wicker Man",
@@ -3169,6 +3198,35 @@ minions["Metadata/Monsters/LeagueHarvest/Blue/HarvestRhexT3Spectre"] = {
 		-- damage_hit_effect_index [damage_hit_effect_index = 2]
 	},
 }
+-- Wild Homunculus
+minions["Metadata/Monsters/LeagueHarvest/Red/HarvestMinerHammerT2Spectre"] = {
+	name = "Wild Homunculus",
+	monsterTags = { "animal_claw_weapon", "caster", "flesh_armour", "is_unarmed", "melee", "physical_affinity", "red_blood", "undead", "very_slow_movement", },
+	baseDamageIgnoresAttackSpeed = true,
+	life = 3.08,
+	lifeScaling = "AltLife1",
+	fireResist = 0,
+	coldResist = 40,
+	lightningResist = 0,
+	chaosResist = 0,
+	damage = 1.07,
+	damageSpread = 0.2,
+	attackTime = 0.93,
+	attackRange = 9,
+	accuracy = 1,
+	skillList = {
+		"MeleeAtAnimationSpeed",
+		"HarvestMinerMelee",
+		"GAHarvestMinerHammerSlam",
+		"EDSHarvestMinerHammerSmoke",
+		"EASHarvestEmerge",
+	},
+	modList = {
+		-- BreachReducedBeyondPortalChance [monster_beyond_portal_chance_+%_final = -66]
+		-- BreachReducedBeyondPortalChance [monster_hellscape_charge_+% = -66]
+		-- damage_hit_effect_index [damage_hit_effect_index = 1]
+	},
+}
 -- Templar Tactician
 minions["Metadata/Monsters/LegionLeague/LegionTemplarCaster1Spectre"] = {
 	name = "Templar Tactician",
@@ -3336,6 +3394,39 @@ minions["Metadata/Monsters/LeagueHeist/Robot/RobotPyreKnightEliteSpectre"] = {
 		"EASHeistRobotPyreBeamSweep",
 		"GSHeistRobotPyreBeamSweepBeam",
 		"ChangeToStance1Heist",
+	},
+	modList = {
+	},
+}
+-- Violator
+minions["Metadata/Monsters/LeagueHeist/Science/ProjectUnarmedEliteGuardSpectre"] = {
+	name = "Violator",
+	monsterTags = { "caster", "chaos_affinity", "fast_movement", "has_claw", "has_one_handed_melee", "human", "humanoid", "light_armour", "melee", "no_pantheon_mod", "not_int", "physical_affinity", "red_blood", "slashing_weapon", },
+	life = 3.57,
+	lifeScaling = "AltLife2",
+	armour = 0.5,
+	evasion = 0.5,
+	fireResist = 30,
+	coldResist = 30,
+	lightningResist = 30,
+	chaosResist = 20,
+	damage = 1.82,
+	damageSpread = 0.2,
+	attackTime = 1.005,
+	attackRange = 10,
+	accuracy = 1,
+	weaponType1 = "Claw",
+	skillList = {
+		"HeistProjectUnarmedMelee1",
+		"HeistProjectUnarmedMelee2",
+		"DoLiterallyNothing",
+		"WalkEmergeHeistScience",
+		"EDSHeistScienceUnarmedGas",
+		"EASHeistScienceUnarmedGasTime",
+		"ChangeToStance1Heist",
+		"HeistCultistUnarmedLeap",
+		"GAHeistCultistUnarmedLeapImpact",
+		"EASHeistMindControlSuicide",
 	},
 	modList = {
 	},
@@ -3595,7 +3686,7 @@ minions["Metadata/Monsters/LeagueHellscape/PaleFaction/HellscapePaleElite2Spectr
 	modList = {
 	},
 }
--- Ravenous Mishapen
+-- Ravenous Misshapen
 minions["Metadata/Monsters/LeagueHellscape/FleshFaction/HellscapeFleshFodder4Spectre"] = {
 	name = "Ravenous Misshapen",
 	monsterTags = { "animal_claw_weapon", "beyond_demon", "caster", "demon", "flesh_armour", "is_unarmed", "lightning_affinity", "medium_movement", "melee", "not_dex", "not_str", "physical_affinity", "red_blood", },
@@ -3615,6 +3706,33 @@ minions["Metadata/Monsters/LeagueHellscape/FleshFaction/HellscapeFleshFodder4Spe
 	skillList = {
 		"MeleeAtAnimationSpeed",
 		"HellscapeFleshFodderArc",
+	},
+	modList = {
+	},
+}
+-- Ravenous Bloodshaper
+minions["Metadata/Monsters/LeagueHellscape/FleshFaction/HellscapeFleshElite1Spectre"] = {
+	name = "Ravenous Bloodshaper",
+	monsterTags = { "animal_claw_weapon", "beyond_demon", "caster", "demon", "flesh_armour", "is_unarmed", "not_dex", "physical_affinity", "ranged", "red_blood", "very_fast_movement", },
+	baseDamageIgnoresAttackSpeed = true,
+	life = 2.7,
+	energyShield = 0.2,
+	armour = 0.5,
+	fireResist = 75,
+	coldResist = 0,
+	lightningResist = 0,
+	chaosResist = 0,
+	damage = 3.51,
+	damageSpread = 0.2,
+	attackTime = 1.5,
+	attackRange = 12,
+	accuracy = 1,
+	weaponType1 = "None",
+	skillList = {
+		"MPSHellscapeFleshEliteBasicProj",
+		"GPSHellscapeFleshEliteSpikeBarrage",
+		"SOHellscapeFleshEliteBloodOrb",
+		"GSHellscapeFleshEliteBloodOrbExplosion",
 	},
 	modList = {
 	},
@@ -3806,6 +3924,7 @@ minions["Metadata/Monsters/LeagueCrucible/Cold/Pyromaniac"] = {
 		-- set_additional_life_scaling_index [set_additional_life_scaling_index = 14]
 		-- is_crucible_monster [is_crucible_monster = 1]
 		-- monster_beyond_portal_chance_+%_final [monster_beyond_portal_chance_+%_final = -33]
+		-- is_settlers_ore_monster [is_settlers_ore_monster = 1]
 	},
 }
 -- Wretched Defiler
@@ -3970,6 +4089,7 @@ minions["Metadata/Monsters/LeagueCrucible/Lightning/Vendigo_"] = {
 		-- set_additional_life_scaling_index [set_additional_life_scaling_index = 14]
 		-- is_crucible_monster [is_crucible_monster = 1]
 		-- monster_beyond_portal_chance_+%_final [monster_beyond_portal_chance_+%_final = -33]
+		-- is_settlers_ore_monster [is_settlers_ore_monster = 1]
 	},
 }
 
@@ -6998,3 +7118,114 @@ minions["Metadata/Monsters/LeagueAzmeri/SpecialCorpses/SynthesisGolemHigh"] = {
 		mod("LinkEffectOnSelf", "INC", 100, 0, 0), -- AzmeriGolemLinkEffectOnSelf2 [link_buff_effect_on_self_+% = 100]
 	},
 }
+-- Conjuror of Rot
+minions["Metadata/Monsters/FaridunLeague/FaridunWarlock/FaridunWarlockLow"] = {
+	name = "Imperfect Conjuror of Rot",
+	monsterTags = { "caster", "human", "humanoid", "not_dex", "not_str", "ranged", "red_blood", "slow_movement", },
+	baseDamageIgnoresAttackSpeed = true,
+	life = 2.04,
+	energyShield = 0.16,
+	fireResist = 0,
+	coldResist = 0,
+	lightningResist = 0,
+	chaosResist = 40,
+	damage = 2.04,
+	damageSpread = 0,
+	attackTime = 1.5,
+	attackRange = 60,
+	accuracy = 1,
+	skillList = {
+		"SSMFaridunWarlockBloodLocust",
+		"SOFaridunWarlockPustule",
+		"GSFaridunWarlockPustuleExplosion",
+		"GTFaridunWarlockPustules",
+		"MPSFaridunWarlockBloodSpray",
+	},
+	modList = {
+		-- set_additional_life_scaling_index [set_additional_life_scaling_index = 25]
+		-- map_related_item_drop_chance_+%_final_from_league [map_related_item_drop_chance_+%_final_from_league = -50]
+	},
+}
+minions["Metadata/Monsters/FaridunLeague/FaridunWarlock/FaridunWarlockMid_"] = {
+	name = "Conjuror of Rot",
+	monsterTags = { "caster", "human", "humanoid", "not_dex", "not_str", "ranged", "red_blood", "slow_movement", },
+	baseDamageIgnoresAttackSpeed = true,
+	life = 2.04,
+	energyShield = 0.16,
+	fireResist = 0,
+	coldResist = 0,
+	lightningResist = 0,
+	chaosResist = 40,
+	damage = 2.04,
+	damageSpread = 0,
+	attackTime = 1.5,
+	attackRange = 60,
+	accuracy = 1,
+	skillList = {
+		"SSMFaridunWarlockBloodLocust",
+		"SOFaridunWarlockPustule",
+		"GSFaridunWarlockPustuleExplosion",
+		"GTFaridunWarlockPustules",
+		"CGEFaridunWarlockSwarmGround",
+		"MPSFaridunWarlockBloodSpray",
+	},
+	modList = {
+		-- set_additional_life_scaling_index [set_additional_life_scaling_index = 25]
+		-- map_related_item_drop_chance_+%_final_from_league [map_related_item_drop_chance_+%_final_from_league = -50]
+	},
+}
+minions["Metadata/Monsters/FaridunLeague/FaridunWarlock/FaridunWarlockHigh"] = {
+	name = "Perfect Conjuror of Rot",
+	monsterTags = { "caster", "human", "humanoid", "not_dex", "not_str", "ranged", "red_blood", "slow_movement", },
+	baseDamageIgnoresAttackSpeed = true,
+	life = 2.04,
+	energyShield = 0.16,
+	fireResist = 0,
+	coldResist = 0,
+	lightningResist = 0,
+	chaosResist = 40,
+	damage = 2.04,
+	damageSpread = 0,
+	attackTime = 1.5,
+	attackRange = 60,
+	accuracy = 1,
+	skillList = {
+		"SSMFaridunWarlockBloodLocust",
+		"SOFaridunWarlockPustule",
+		"GSFaridunWarlockPustuleExplosion",
+		"GTFaridunWarlockPustules",
+		"CGEFaridunWarlockSwarmGround",
+		"MPSFaridunWarlockBloodSpray",
+		"FaridunCasterUndeadDamageOverTimeAura",
+	},
+	modList = {
+		-- set_additional_life_scaling_index [set_additional_life_scaling_index = 25]
+		-- map_related_item_drop_chance_+%_final_from_league [map_related_item_drop_chance_+%_final_from_league = -50]
+	},
+}
+-- Undead Vaal Commander
+minions["Metadata/Monsters/VaalMonsters/VaalOverseer"] = {
+	name = "Undead Vaal Commander",
+	monsterTags = { "fire_affinity", "has_one_hand_sword", "has_one_handed_melee", "human", "humanoid", "medium_movement", "melee", "not_dex", "not_int", "physical_affinity", "plate_armour", "red_blood", "slashing_weapon", },
+	baseDamageIgnoresAttackSpeed = true,
+	life = 2.59,
+	armour = 0.75,
+	fireResist = 40,
+	coldResist = 0,
+	lightningResist = 0,
+	chaosResist = 0,
+	damage = 2.59,
+	damageSpread = 0.2,
+	attackTime = 1.335,
+	attackRange = 17,
+	accuracy = 1,
+	weaponType1 = "One Handed Sword",
+	skillList = {
+		"MeleeAtAnimationSpeed",
+		"VaalOverseerHeavyStrike",
+	},
+	modList = {
+	},
+}
+	return minions
+end

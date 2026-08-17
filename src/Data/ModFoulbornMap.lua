@@ -23,13 +23,15 @@ return {
 		"+1 to Maximum Endurance Charges",
 	},
 	["Amplification Rod"] = {
-		"Socketed Gems are Supported by Level 1 Awakened Spell Cascade",
+		"Socketed Gems are Supported by Level 1 Greater Spell Cascade",
 	},
 	["Anathema"] = {
 		"Curse Skills have (-30-30)% reduced Skill Effect Duration",
 	},
 	["Ancestral Vision"] = {
+		"+(5-10)% chance to Suppress Spell Damage",
 		"Modifiers to Chance to Suppress Spell Damage also apply to Chance to Defend with 200% of Armour at 50% of their Value",
+		"Prevent +(3-5)% of Suppressed Spell Damage",
 	},
 	["Apep's Rage"] = {
 		"Skills gain Added Chaos Damage equal to (20-25)% of Mana Cost, if Mana Cost is not higher than the maximum you could spend",
@@ -101,7 +103,7 @@ return {
 		"Projectiles Pierce all nearby Targets",
 	},
 	["Choir of the Storm"] = {
-		"Mana is increased by 50% of Overcapped Lightning Resistance",
+		"Mana is increased by 1% per 4% Overcapped Lightning Resistance",
 	},
 	["Cloak of Defiance"] = {
 		"Eldritch Battery",
@@ -148,7 +150,7 @@ return {
 		"Gain (15-30)% of Missing Unreserved Mana before being Hit by an Enemy",
 	},
 	["Deidbellow"] = {
-		"(25-50)% increased Warcry Buff Effect",
+		"(20-35)% increased Warcry Buff Effect",
 		"(20-40)% increased Warcry Cooldown Recovery Rate",
 	},
 	["Devoto's Devotion"] = {
@@ -178,8 +180,8 @@ return {
 		"10% of Damage taken Recouped as Life per Socketed Red Gem",
 	},
 	["Doon Cuebiyari"] = {
-		"1% increased maximum Energy Shield per 16 Strength when in Off Hand",
-		"1% increased maximum Mana per 12 Strength when in Main Hand",
+		"1% increased maximum Energy Shield per 25 Strength when in Off Hand",
+		"1% increased maximum Mana per 18 Strength when in Main Hand",
 	},
 	["Doryani's Fist"] = {
 		"30% chance to Sap Enemies",
@@ -211,17 +213,29 @@ return {
 		"Chaos Damage taken does not bypass Energy Shield while not on Low Mana",
 		"Damage cannot be Reflected",
 	},
+	["Eye of Chayula"] = {
+		"20% increased Quantity of Gold Dropped by Slain Enemies",
+		"20% reduced maximum Mana",
+	},
 	["Facebreaker"] = {
 		"(20-30)% increased Area of Effect while Unarmed",
 	},
 	["Farrul's Fur"] = {
 		"100% increased Attack Damage",
 	},
+	["Firesong"] = {
+		"(25-50)% increased Ignite Duration on Enemies",
+		"+(10-15)% to Fire Damage over Time Multiplier",
+	},
 	["Flesh and Spirit"] = {
 		"Vaal Skills have (20-40)% increased Skill Effect Duration",
 	},
 	["Fleshcrafter"] = {
 		"Minions Leech 5% of Elemental Damage as Energy Shield",
+	},
+	["Fleshrender"] = {
+		"Damaging Ailments deal damage (20-40)% faster",
+		"(25-27)% increased Attack Speed",
 	},
 	["Frostbreath"] = {
 		"(60-100)% increased Critical Strike Chance",
@@ -237,7 +251,7 @@ return {
 	},
 	["Ghostwrithe"] = {
 		"50% of Chaos Damage taken Recouped as Life",
-		"Your Maximum Energy Shield is Equal to 50% of Your Maximum Life",
+		"Your Maximum Energy Shield is Equal to 35% of Your Maximum Life",
 	},
 	["Gifts from Above"] = {
 		"(25-40)% increased Effect of Consecrated Ground you create",
@@ -258,7 +272,7 @@ return {
 		"Your Warcries are disabled",
 	},
 	["Hand of Thought and Motion"] = {
-		"5% increased Accuracy Rating per 25 Intelligence",
+		"3% increased Accuracy Rating per 25 Intelligence",
 		"(8-12)% increased Strength",
 	},
 	["Hand of Wisdom and Action"] = {
@@ -272,6 +286,7 @@ return {
 	},
 	["Heartbound Loop"] = {
 		"(10-20)% reduced Mana Cost of Minion Skills",
+		"(20-30)% increased Mana Cost Efficiency of Minion Skills",
 	},
 	["Heatshiver"] = {
 		"50% of Cold Damage Converted to Fire Damage",
@@ -298,12 +313,17 @@ return {
 	["Intuitive Leap"] = {
 		"Keystone Passive Skills in Radius can be Allocated without being connected to your tree Passage",
 	},
+	["Iron Heart"] = {
+		"Chance to Block Attack Damage is Unlucky",
+		"+1% Chance to Block Spell Damage per 50 Strength",
+	},
 	["Jorrhast's Blacksteel"] = {
 		"Maximum number of Animated Weapons is Doubled",
 		"Minions deal (50-70)% increased Damage if you've Hit Recently",
 	},
 	["Kalisa's Grace"] = {
 		"Socketed Gems are Supported by Level 18 Focused Channelling",
+		"100% increased Mana Cost Efficiency for 2 seconds after Spending a total of 800 Mana",
 		"50% reduced Mana Cost of Skills for 2 seconds after Spending a total of 800 Mana",
 	},
 	["Kaom's Primacy"] = {
@@ -320,6 +340,14 @@ return {
 	},
 	["Kaom's Way"] = {
 		"(20-30)% increased total Power counted by Warcries",
+	},
+	["Khatal's Geyser"] = {
+		"Mana Flasks gain (1-3) Charge every 3 seconds",
+		"(12-14)% increased maximum Mana",
+	},
+	["Khatal's Weeping"] = {
+		"Life Flasks gain (1-3) Charge every 3 seconds",
+		"(8-10)% increased maximum Life",
 	},
 	["Kikazaru"] = {
 		"+2 Maximum Mana per Level",
@@ -403,6 +431,10 @@ return {
 		"Lose 0.5% Life and Energy Shield per Second per Minion",
 		"+2 to maximum number of Summoned Golems",
 	},
+	["Might of the Meek"] = {
+		"75% increased Effect of non-Keystone Passive Skills in Radius Notable Passive Skills in Radius grant nothing",
+		"100% increased Effect of non-Keystone Passive Skills in Radius Notable Passive Skills in Radius grant nothing",
+	},
 	["Mind of the Council"] = {
 		"30% of Physical Damage is taken from Mana before Life",
 	},
@@ -455,7 +487,7 @@ return {
 		"Insufficient Mana doesn't prevent your Bow Attacks",
 	},
 	["Rathpith Globe"] = {
-		"Deal 5% increased Damage Over Time per 100 Player Maximum Life",
+		"Deal 3% increased Damage Over Time per 100 Player Maximum Life",
 		"2% increased Effect of Non-Damaging Ailments you inflict with Critical Strikes per 100 Player Maximum Life",
 	},
 	["Razor of the Seventh Sun"] = {
@@ -475,7 +507,7 @@ return {
 		"(12-16)% increased Intelligence",
 	},
 	["Reverberation Rod"] = {
-		"Socketed Gems are Supported by Level 1 Awakened Spell Cascade",
+		"Socketed Gems are Supported by Level 1 Greater Spell Cascade",
 	},
 	["Rigwald's Command"] = {
 		"+10% Chance to Block Spell Damage while Dual Wielding",
@@ -505,6 +537,10 @@ return {
 	},
 	["Saffell's Frame"] = {
 		"Maximum Energy Shield is increased by Chaos Resistance",
+	},
+	["Saresh's Darkness"] = {
+		"(40-60)% chance to Avoid being Poisoned",
+		"(30-50)% increased Chaos Damage",
 	},
 	["Scold's Bridle"] = {
 		"(20-30)% increased Mana Cost of Skills",
@@ -546,6 +582,10 @@ return {
 	["Skyforth"] = {
 		"+(3-5)% to Critical Strike Multiplier per Power Charge",
 	},
+	["Skysunder"] = {
+		"(30-35)% increased Duration of Ailments on Enemies",
+		"(25-27)% increased Attack Speed",
+	},
 	["Snakebite"] = {
 		"+(100-130) to maximum Energy Shield",
 	},
@@ -554,6 +594,10 @@ return {
 	},
 	["Solaris Lorica"] = {
 		"25% of Elemental Damage from Hits taken as Chaos Damage",
+	},
+	["Solerai's Radiance"] = {
+		"(30-50)% increased Fire Damage",
+		"(40-60)% reduced Ignite Duration on you",
 	},
 	["Song of the Sirens"] = {
 		"Wombgift Bait",
@@ -576,19 +620,35 @@ return {
 	["Starkonja's Head"] = {
 		"+(100-200) to maximum Mana",
 	},
+	["Stormshroud"] = {
+		"(10-15)% increased Shock Duration on Enemies",
+		"(25-50)% increased Effect of Shock",
+	},
 	["Sunblast"] = {
 		"Skills used by Traps have (40-60)% increased Area of Effect",
 	},
 	["The Anticipation"] = {
-		"(8-12)% of Armour applies to Fire, Cold and Lightning Damage taken from Hits if you've Blocked Recently",
+		"(8-12)% of Armour applies to Fire, Cold and Lightning Damage taken from Hits if you have Blocked Recently",
 		"+3% to maximum Chance to Block Attack Damage",
 	},
 	["The Aylardex"] = {
 		"Eldritch Battery",
 	},
+	["The Bane of Hope"] = {
+		"(14-18)% increased Attack Speed",
+		"(10-15)% chance on Hitting an Enemy for all Impales on that Enemy to last for an additional Hit",
+	},
 	["The Baron"] = {
 		"+1 to maximum number of Raised Zombies per 500 Intelligence",
 		"With at least 1000 Intelligence, (1.5-2)% of Damage dealt by your Raised Zombies is Leeched to you as Energy Shield",
+	},
+	["The Blue Dream"] = {
+		"+3% to Critical Strike Multiplier per Power Charge",
+		"Passives granting Lightning Resistance or all Elemental Resistances in Radius also grant increased Maximum Energy Shield at 75% of its value",
+	},
+	["The Blue Nightmare"] = {
+		"Lightning Damage with Hits is Lucky if you've Blocked Spell Damage Recently",
+		"Passives granting Lightning Resistance or all Elemental Resistances in Radius also grant Lightning Damage Converted to Chaos Damage at 100% of its value",
 	},
 	["The Brass Dome"] = {
 		"Gain no inherent bonuses from Strength",
@@ -610,9 +670,18 @@ return {
 	["The Dancing Duo"] = {
 		"Adds 1 to 777 Lightning Damage",
 	},
+	["The Desecrated Chalice"] = {
+		"+(25-30)% to Chaos Resistance",
+		"(20-22)% increased Attack Speed",
+		"Gain (35-45)% of Physical Damage as Extra Chaos Damage",
+	},
 	["The Embalmer"] = {
 		"Poisons you inflict deal Damage (15-20)% faster",
-		"On Killing a Poisoned Enemy, nearby Enemies are Poisoned",
+		"When you kill a Poisoned Enemy, Enemies within 1.5 metres are Poisoned",
+	},
+	["The Flame of Hope"] = {
+		"+(28-35)% to Fire Damage over Time Multiplier",
+		"(30-34)% increased Critical Strike Chance",
 	},
 	["The Formless Flame"] = {
 		"30% of Fire Damage from Hits taken as Physical Damage",
@@ -623,6 +692,14 @@ return {
 	},
 	["The Fourth Vow"] = {
 		"40% of Non-Chaos Damage taken bypasses Energy Shield",
+	},
+	["The Green Dream"] = {
+		"Passives granting Cold Resistance or all Elemental Resistances in Radius also grant increased Maximum Mana at 75% of its value",
+		"1% increased Movement Speed per Frenzy Charge",
+	},
+	["The Green Nightmare"] = {
+		"Cold Damage with Hits is Lucky if you've Suppressed Spell Damage Recently",
+		"Passives granting Cold Resistance or all Elemental Resistances in Radius also grant Cold Damage Converted to Chaos Damage at 100% of its value",
 	},
 	["The Gull"] = {
 		"(15-20)% of Maximum Life Converted to Energy Shield",
@@ -646,7 +723,7 @@ return {
 		"Flasks applied to you have (10-15)% increased Effect",
 	},
 	["The Oppressor"] = {
-		"(10-15)% chance to Avoid All Damage from Hits",
+		"(10-15)% chance to Avoid Damage of each Type from Hits",
 		"(20-30)% Chance to Block Spell Damage",
 	},
 	["The Pandemonius"] = {
@@ -659,9 +736,23 @@ return {
 	["The Poet's Pen"] = {
 		"Adds 3 to 5 Physical Damage to Spells per 3 Player Levels",
 	},
+	["The Red Dream"] = {
+		"+4% to Chaos Resistance per Endurance Charge",
+		"Passives granting Fire Resistance or all Elemental Resistances in Radius also grant increased Maximum Life at 50% of its value",
+	},
+	["The Red Nightmare"] = {
+		"Fire Damage with Hits is Lucky if you've Blocked an Attack Recently",
+		"Passives granting Fire Resistance or all Elemental Resistances in Radius also grant Fire Damage Converted to Chaos Damage at 100% of its value",
+	},
 	["The Red Trail"] = {
 		"Gain an Endurance Charge each second while Stationary",
 		"Gain a Power Charge on Hit while Bleeding",
+	},
+	["The Sacred Chalice"] = {
+		"(20-22)% increased Attack Speed",
+		"Gain (20-25)% of Physical Damage as Extra Cold Damage",
+		"Gain (20-25)% of Physical Damage as Extra Fire Damage",
+		"Gain (20-25)% of Physical Damage as Extra Lightning Damage",
 	},
 	["The Searing Touch"] = {
 		"+(3-5) to maximum number of Summoned Searing Bond Totems",
@@ -707,7 +798,7 @@ return {
 		"(60-100)% increased Effect of Auras from Mines",
 	},
 	["Tulborn"] = {
-		"+(2-4) to Level of all Cold Spell Skill Gems",
+		"+(2-3) to Level of all Cold Spell Skill Gems",
 		"Gain a Power Charge after Spending a total of 200 Mana",
 	},
 	["Tulfall"] = {
@@ -796,6 +887,10 @@ return {
 	["Windshriek"] = {
 		"You are Immune to Curses",
 	},
+	["Witchbane"] = {
+		"Curse Skills have (10-15)% increased Skill Effect Duration",
+		"Cursed Enemies you or your Minions Kill have a (10-15)% chance to Explode, dealing a quarter of their maximum Life as Chaos Damage",
+	},
 	["Wyrmsign"] = {
 		"Socketed Gems are Supported by Level 5 Manaforged Arrows",
 	},
@@ -815,7 +910,7 @@ return {
 		"Socketed Gems are Supported by Level 30 Immolate",
 	},
 	["Ylfeban's Trickery"] = {
-		"Increases and Reductions to Spell Damage also apply to Attack Damage with Retaliation Skills at 200% of their value",
+		"Retaliation Skills have 200% Arcane Might",
 	},
 	["Zahndethus' Cassock"] = {
 		"Create Profane Ground instead of Consecrated Ground",

@@ -31,7 +31,10 @@ end
 
 -- Path can be in any format recognized by the extractor at oozPath, ie,
 -- a .ggpk file or a Steam Path of Exile directory
-local GGPKClass = newClass("GGPKData", function(self, path, datPath, reExport)
+---@class GGPKData
+local GGPKClass = newClass("GGPKData")
+
+function GGPKClass:GGPKData(path, datPath, reExport)
 	if datPath then
 		self.oozPath = datPath:match("\\$") and datPath or (datPath .. "\\")
 	else
@@ -46,7 +49,8 @@ local GGPKClass = newClass("GGPKData", function(self, path, datPath, reExport)
 	self.ot = { }
 	
 	self:AddDat64Files()
-end)
+	return self
+end
 
 function GGPKClass:CleanDir(reExport)
 	if reExport then
@@ -88,7 +92,7 @@ function GGPKClass:ExtractFiles(reExport)
 
 		-- non-regex chunk: dat files + txtList + itList
 		for i = 1, #txtList do
-			datFiles[#datFiles + 1] = itList[i]
+			datFiles[#datFiles + 1] = txtList[i]
 		end
 		for i = 1, #itList do
 			datFiles[#datFiles + 1] = itList[i]
@@ -126,14 +130,22 @@ end
 
 function GGPKClass:AddDat64Files()
 	local datFiles = self:GetNeededFiles()
+	local missingCount = 0
 	table.sort(datFiles, function(a, b) return a:lower() < b:lower() end)
 	for _, fname in ipairs(datFiles) do
 		local record = { }
 		record.name = fname:match("([^/\\]+)$") .. "c64"
 		local rawFile = io.open(self.oozPath .. fname:gsub("/", "\\") .. "c64", 'rb')
-		record.data = rawFile:read("*all")
-		rawFile:close()
-		t_insert(self.dat, record)
+		if rawFile then
+			record.data = rawFile:read("*all")
+			rawFile:close()
+			t_insert(self.dat, record)
+		else
+			missingCount = missingCount + 1
+		end
+	end
+	if missingCount > 0 then
+		t_insert(main.scriptOutput, { "^7"..string.format("Skipped %d missing cached GGPK data files. Press Ctrl+F5 to refresh GGPK data.", missingCount), height = 14 })
 	end
 end
 
@@ -170,6 +182,7 @@ function GGPKClass:GetNeededFiles()
 		"Data/FlavourText.dat",
 		"Data/Words.dat",
 		"Data/ItemClasses.dat",
+		"Data/ItemStances.dat",
 		"Data/SkillTotemVariations.dat",
 		"Data/Essences.dat",
 		"Data/EssenceType.dat",
@@ -205,11 +218,15 @@ function GGPKClass:GetNeededFiles()
 		"Data/PantheonPanelLayout.dat",
 		"Data/AlternatePassiveAdditions.dat",
 		"Data/AlternatePassiveSkills.dat",
+		"Data/AlternateTreeArt.dat",
 		"Data/AlternateTreeVersions.dat",
 		"Data/GrantedEffectQualityStats.dat",
 		"Data/AegisVariations.dat",
 		"Data/CostTypes.dat",
 		"Data/PassiveJewelRadii.dat",
+		"Data/PassiveJewelRadiiArt.dat",
+		"Data/PassiveSkillTreeConnectionArt.dat",
+		"Data/PassiveSkillTreeNodeFrameArt.dat",
 		"Data/SoundEffects.dat",
 		"Data/MavenJewelRadiusKeystones.dat",
 		"Data/GrantedEffectStatSets.dat",
@@ -265,6 +282,8 @@ function GGPKClass:GetNeededFiles()
 		"Data/MercenarySupports.dat",
 		"Data/MercenaryWieldableTypes.dat",
 		"Data/SkillArtVariations.dat",
+		"Data/Melee.dat",
+		"Data/Animation.dat",
 		"Data/MiscAnimated.dat",
 		"Data/MiscAnimatedArtVariations.dat",
 		"Data/MiscBeamsArtVariations.dat",
@@ -273,10 +292,10 @@ function GGPKClass:GetNeededFiles()
 		"Data/ProjectilesArtVariations.dat",
 		"Data/MonsterVarietiesArtVariations.dat",
 		"Data/PreloadGroups.dat",
-		"Data/BrequelGraftTypes.dat",
 		"Data/BrequelGraftSkillStats.dat",
 		"Data/BrequelGraftGrantedSkillLevels.dat",
 		"Data/VillageBalancePerLevelShared.dat",
+		"Data/CurrencyExchange.dat",
 	}
 	local txtFiles = {
 		"Metadata/StatDescriptions/passive_skill_aura_stat_descriptions.txt",

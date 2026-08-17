@@ -3,7 +3,8 @@
 -- Module: Calc Setup
 -- Initialises the environment for calculations.
 --
-local calcs = ...
+---@class Calcs
+local calcs = require("Modules.CalcBase")
 
 local pairs = pairs
 local ipairs = ipairs
@@ -37,12 +38,16 @@ function calcs.initModDB(env, modDB)
 	modDB:NewMod("InspirationChargesMax", "BASE", data.characterConstants["maximum_righteous_charges"], "Base")
 	modDB:NewMod("CrabBarriersMax", "BASE", 0, "Base")
 	modDB:NewMod("BrutalChargesMax", "BASE", 0, "Base")
+	modDB:NewMod("BrineChargesMax", "BASE", 0, "Base")
+	modDB:NewMod("PhysicalDamageGainAsCold", "BASE", data.characterConstants["physical_damage_%_to_add_as_cold_per_brine_charge"], "Base", { type = "Multiplier", var = "BrineCharge" })
+	modDB:NewMod("PhysicalDamageGainAsLightning", "BASE", data.characterConstants["physical_damage_%_to_add_as_lightning_per_brine_charge"], "Base", { type = "Multiplier", var = "BrineCharge" })
 	modDB:NewMod("AbsorptionChargesMax", "BASE", 0, "Base")
 	modDB:NewMod("AfflictionChargesMax", "BASE", 0, "Base")
 	modDB:NewMod("BloodChargesMax", "BASE", data.characterConstants["maximum_blood_scythe_charges"], "Base")
 	modDB:NewMod("MaxLifeLeechRate", "BASE", data.characterConstants["maximum_life_leech_rate_%_per_minute"] / 60, "Base")
 	modDB:NewMod("MaxManaLeechRate", "BASE", data.characterConstants["maximum_mana_leech_rate_%_per_minute"] / 60, "Base")
 	modDB:NewMod("ImpaleStacksMax", "BASE", data.characterConstants["impaled_debuff_number_of_reflected_hits"], "Base")
+	modDB:NewMod("SoulEaterMax", "BASE", data.characterConstants["soul_eater_maximum_stacks"], "Base")
 	modDB:NewMod("BleedStacksMax", "BASE", 1, "Base")
 	modDB:NewMod("MaxEnergyShieldLeechRate", "BASE", 10, "Base")
 	modDB:NewMod("MaxLifeLeechInstance", "BASE", data.characterConstants["maximum_life_leech_amount_per_leech_%_max_life"] , "Base")
@@ -52,7 +57,7 @@ function calcs.initModDB(env, modDB)
 	modDB:NewMod("MineLayingTime", "BASE", 0.3, "Base")
 	modDB:NewMod("WarcryCastTime", "BASE", 0.8, "Base")
 	modDB:NewMod("TotemPlacementTime", "BASE", 0.6, "Base")
-	modDB:NewMod("BallistaPlacementTime", "BASE", 0.35, "Base")
+	modDB:NewMod("BallistaPlacementTime", "BASE", 0.5, "Base")
 	modDB:NewMod("ActiveTotemLimit", "BASE", data.characterConstants["base_number_of_totems_allowed"], "Base")
 	modDB:NewMod("ShockStacksMax", "BASE", 1, "Base")
 	modDB:NewMod("ScorchStacksMax", "BASE", 1, "Base")
@@ -63,6 +68,8 @@ function calcs.initModDB(env, modDB)
 	modDB:NewMod("DamageTaken", "INC", 10, "Base", ModFlag.Spell, { type = "Condition", var = "Unnerved", neg = true}, { type = "Condition", var = "Party:Unnerved"})
 	modDB:NewMod("Damage", "MORE", -10, "Base", { type = "Condition", var = "Debilitated"}, { type = "GlobalEffect", effectName = "Debilitated", effectType = "Debuff"})
 	modDB:NewMod("MovementSpeed", "MORE", -20, "Base", { type = "Condition", var = "Debilitated"}, { type = "GlobalEffect", effectName = "Debilitated", effectType = "Debuff"})
+	modDB:NewMod("Damage", "MORE", -10, "Base", { type = "Condition", var = "MalignantMadness"}, { type = "GlobalEffect", effectName = "Malignant Madness", effectType = "Debuff"})
+	modDB:NewMod("ActionSpeed", "MORE", -10, "Base", { type = "Condition", var = "MalignantMadness"}, { type = "GlobalEffect", effectName = "Malignant Madness", effectType = "Debuff"})
 	modDB:NewMod("Condition:Burning", "FLAG", true, "Base", { type = "IgnoreCond" }, { type = "Condition", var = "Ignited" })
 	modDB:NewMod("Condition:Poisoned", "FLAG", true, "Base", { type = "IgnoreCond" }, { type = "MultiplierThreshold", var = "PoisonStack", threshold = 1 })
 	modDB:NewMod("Blind", "FLAG", true, "Base", { type = "Condition", var = "Blinded" })
@@ -83,6 +90,9 @@ function calcs.initModDB(env, modDB)
 	modDB:NewMod("DivineShrine", "FLAG", true, "Base", { type = "Condition", var = "DivineShrine" })
 	modDB:NewMod("EchoingShrine", "FLAG", true, "Base", { type = "Condition", var = "EchoingShrine" })
 	modDB:NewMod("GloomShrine", "FLAG", true, "Base", { type = "Condition", var = "GloomShrine" })
+	modDB:NewMod("GreaterFreezingShrine", "FLAG", true, "Base", { type = "Condition", var = "GreaterFreezingShrine" })
+	modDB:NewMod("GreaterShockingShrine", "FLAG", true, "Base", { type = "Condition", var = "GreaterShockingShrine" })
+	modDB:NewMod("GreaterSkeletalShrine", "FLAG", true, "Base", { type = "Condition", var = "GreaterSkeletalShrine" })
 	modDB:NewMod("ImpenetrableShrine", "FLAG", true, "Base", { type = "Condition", var = "ImpenetrableShrine" })
 	modDB:NewMod("MassiveShrine", "FLAG", true, "Base", { type = "Condition", var = "MassiveShrine" })
 	modDB:NewMod("ReplenishingShrine", "FLAG", true, "Base", { type = "Condition", var = "ReplenishingShrine" })
@@ -105,7 +115,7 @@ function calcs.initModDB(env, modDB)
 end
 
 function calcs.buildModListForNode(env, node)
-	local modList = new("ModList")
+	local modList = new("ModList"):ModList()
 	if node.type == "Keystone" then
 		modList:AddMod(node.keystoneMod)
 	else
@@ -126,7 +136,7 @@ function calcs.buildModListForNode(env, node)
 	-- Apply effect scaling
 	local scale = calcLib.mod(modList, nil, "PassiveSkillEffect")
 	if scale ~= 1 then
-		local scaledList = new("ModList")
+		local scaledList = new("ModList"):ModList()
 		scaledList:ScaleAddList(modList, scale)
 		modList = scaledList
 	end
@@ -169,7 +179,7 @@ function calcs.buildModListForNodeList(env, nodeList, finishJewels)
 	end
 
 	-- Add node modifiers
-	local modList = new("ModList")
+	local modList = new("ModList"):ModList()
 	local explodeSources = {}
 	for _, node in pairs(nodeList) do
 		local nodeModList, explode = calcs.buildModListForNode(env, node)
@@ -295,6 +305,21 @@ local function applyGemMods(effect, modList)
 			match = false
 		end
 		if match then
+			-- save quality increases for use in tooltips
+			if value.key == "quality" then
+				local isSocketed = false
+				for _, tag in ipairs(mod.mod) do
+					if tag.type == "SocketedIn" then
+						isSocketed = true
+						break
+					end
+				end
+				if isSocketed then
+					effect.itemQuality = (effect.itemQuality or 0) + value.value
+				else
+					effect.globalQuality = (effect.globalQuality or 0) + value.value
+				end
+			end
 			effect[value.key] = (effect[value.key] or 0) + value.value
 			effect.gemPropertyInfo = effect.gemPropertyInfo or {}
 			t_insert(effect.gemPropertyInfo, mod)
@@ -376,11 +401,11 @@ function calcs.initEnv(build, mode, override, specEnv)
 		env.override = override
 		env.classId = env.spec.curClassId
 
-		modDB = new("ModDB")
+		modDB = new("ModDB"):ModDB()
 		env.modDB = modDB
-		enemyDB = new("ModDB")
+		enemyDB = new("ModDB"):ModDB()
 		env.enemyDB = enemyDB
-		env.itemModDB = new("ModDB")
+		env.itemModDB = new("ModDB"):ModDB()
 
 		env.enemyLevel = build.configTab.enemyLevel or m_min(data.misc.MaxEnemyLevel, build.characterLevel)
 
@@ -495,12 +520,9 @@ function calcs.initEnv(build, mode, override, specEnv)
 		modDB:NewMod("MaximumGaleForce", "BASE", 10, "Base")
 		modDB:NewMod("MaximumFortification", "BASE", data.characterConstants["base_max_fortification"], "Base")
 		modDB:NewMod("MaximumValour", "BASE", 50, "Base")
-		modDB:NewMod("SoulEaterMax", "BASE", data.characterConstants["soul_eater_maximum_stacks"], "Base")
 		modDB:NewMod("Multiplier:IntensityLimit", "BASE", 3, "Base")
 		modDB:NewMod("Damage", "INC", data.characterConstants["damage_+%_per_10_rampage_stacks"], "Base", { type = "Multiplier", var = "Rampage", limit = data.characterConstants["max_rampage_stacks"] / 20, div = 20 })
 		modDB:NewMod("MovementSpeed", "INC", data.characterConstants["movement_velocity_+%_per_10_rampage_stacks"], "Base", { type = "Multiplier", var = "Rampage", limit = data.characterConstants["max_rampage_stacks"] / 20, div = 20 })
-		modDB:NewMod("Speed", "INC", 5, "Base", ModFlag.Attack, { type = "Multiplier", var = "SoulEater"})
-		modDB:NewMod("Speed", "INC", 5, "Base", ModFlag.Cast, { type = "Multiplier", var = "SoulEater" })
 		modDB:NewMod("ActiveTrapLimit", "BASE", data.characterConstants["base_number_of_traps_allowed"], "Base")
 		modDB:NewMod("ActiveMineLimit", "BASE", data.characterConstants["base_number_of_remote_mines_allowed"], "Base")
 		modDB:NewMod("MineThrowCount", "BASE", 1, "Base")
@@ -521,8 +543,8 @@ function calcs.initEnv(build, mode, override, specEnv)
 		modDB:NewMod("PerAfflictionNonDamageEffect", "BASE", data.characterConstants["non_damaging_ailment_effect_+%_final_per_affliction_charge"], "Base")
 		modDB:NewMod("PerAbsorptionElementalEnergyShieldRecoup", "BASE", data.characterConstants["elemental_damage_taken_goes_to_energy_shield_over_4_seconds_%_per_absorption_charge"], "Base")
 		modDB:NewMod("TinctureLimit", "BASE", 1, "Base")
-		modDB:NewMod("ManaDegenPercent", "BASE", 1, "Base", { type = "Multiplier", var = "EffectiveManaBurnStacks" })
-		modDB:NewMod("LifeDegenPercent", "BASE", 1, "Base", { type = "Multiplier", var = "WeepingWoundsStacks" })
+		modDB:NewMod("ManaDegenPercentTincture", "BASE", 1, "Base", { type = "Multiplier", var = "EffectiveManaBurnStacks" })
+		modDB:NewMod("LifeDegenPercentTincture", "BASE", 1, "Base", { type = "Multiplier", var = "WeepingWoundsStacks" })
 		modDB:NewMod("PresenceRadius", "BASE", data.characterConstants["base_presence_radius"], "Base")
 
 		-- Add bandit mods
@@ -577,6 +599,7 @@ function calcs.initEnv(build, mode, override, specEnv)
 	end
 
 	local allocatedNotableCount = env.spec.allocatedNotableCount
+	local allocatedKeystoneCount = env.spec.allocatedKeystoneCount
 	local allocatedMasteryCount = env.spec.allocatedMasteryCount
 	local allocatedMasteryTypeCount = env.spec.allocatedMasteryTypeCount
 	local allocatedMasteryTypes = copyTable(env.spec.allocatedMasteryTypes)
@@ -607,6 +630,8 @@ function calcs.initEnv(build, mode, override, specEnv)
 						end
 					elseif node.type == "Notable" then
 						allocatedNotableCount = allocatedNotableCount + 1
+					elseif node.type == "Keystone" then
+						allocatedKeystoneCount = allocatedKeystoneCount + 1	
 					end
 					if node.isTattoo and node.overrideType then
 						if not allocatedTattooTypes[node.overrideType] then
@@ -631,6 +656,8 @@ function calcs.initEnv(build, mode, override, specEnv)
 						end
 					elseif node.type == "Notable" then
 						allocatedNotableCount = allocatedNotableCount - 1
+					elseif node.type == "Keystone" then
+						allocatedKeystoneCount = allocatedKeystoneCount - 1	
 					end
 					if node.isTattoo and node.overrideType then
 						if allocatedTattooTypes[node.overrideType] then
@@ -649,6 +676,9 @@ function calcs.initEnv(build, mode, override, specEnv)
 
 	if allocatedNotableCount and allocatedNotableCount > 0 then
 		modDB:NewMod("Multiplier:AllocatedNotable", "BASE", allocatedNotableCount)
+	end
+	if allocatedKeystoneCount and allocatedKeystoneCount > 0 then
+		modDB:NewMod("Multiplier:AllocatedKeystone", "BASE", allocatedKeystoneCount)
 	end
 	if allocatedMasteryCount and allocatedMasteryCount > 0 then
 		modDB:NewMod("Multiplier:AllocatedMastery", "BASE", allocatedMasteryCount)
@@ -669,8 +699,17 @@ function calcs.initEnv(build, mode, override, specEnv)
 	if not accelerate.requirementsItems then
 		local items = {}
 		local jewelLimits = {}
-		for _, slot in pairs(build.itemsTab.orderedSlots) do
+		for _, slot in ipairs(build.itemsTab.orderedSlots) do
 			local slotName = slot.slotName
+			if slotName == "Graft 1" or slotName == "Graft 2" then
+				if not build.spec.treeVersion:find("3_27") then
+					goto continue
+				end
+			end
+			-- ignore item in Ring 3 if The Unseen Hand is not allocated
+			if slotName == "Ring 3" and not env.initialNodeModDB:Flag(nil, "AdditionalRingSlot") then
+				goto continue
+			end
 			local item
 			if slotName == override.repSlotName then
 				item = override.repItem
@@ -792,6 +831,10 @@ function calcs.initEnv(build, mode, override, specEnv)
 					end
 				end
 			end
+			if item and item.type == "Flask" and item.base.subType == "Life" and item.flaskData then
+				-- Keep highest life flask recovery even if this slot is later disabled (e.g. Poisonous Concoction).
+				env.itemModDB.multipliers["LifeFlaskRecovery"] = m_max(env.itemModDB.multipliers["LifeFlaskRecovery"] or 0, item.flaskData.lifeTotal or 0)
+			end
 			items[slotName] = item
 			::continue::
 		end
@@ -814,7 +857,7 @@ function calcs.initEnv(build, mode, override, specEnv)
 					end
 				end
 			end
-			for _, slot in pairs(build.itemsTab.orderedSlots) do
+			for _, slot in ipairs(build.itemsTab.orderedSlots) do
 				local slotName = slot.slotName
 				if items[slotName] then
 					local srcList = items[slotName].modList or items[slotName].slotModList[slot.slotNum]
@@ -862,17 +905,39 @@ function calcs.initEnv(build, mode, override, specEnv)
 			end
 		end
 
-		for _, slot in pairs(build.itemsTab.orderedSlots) do
+		for _, slot in ipairs(build.itemsTab.orderedSlots) do
+			local item = items[slot.slotName]
+			local missingAnoints = build.itemsTab:getMissingAnointCount(item)
+			if missingAnoints > 0 then
+				local slotLabel = slot.label
+				if missingAnoints > 1 then
+					slotLabel = slotLabel .. " (" .. missingAnoints .. " missing)"
+				end
+				env.itemWarnings.missingAnointWarning = env.itemWarnings.missingAnointWarning or { }
+				t_insert(env.itemWarnings.missingAnointWarning, slotLabel)
+			end
+		end
+
+		-- Track which flask slot (1-5) each flask is in, for adjacency checks
+		env.flaskSlotMap = { }
+		env.flaskSlotOccupied = { }
+		for _, slot in ipairs(build.itemsTab.orderedSlots) do
 			local slotName = slot.slotName
 			local item = items[slotName]
 			if item and item.type == "Flask" then
+				env.itemModDB.conditions["Have"..item.baseName:gsub("%s+", "")] = true
 				if slot.active then
 					env.flasks[item] = true
 				end
+				local flaskNum = tonumber(slotName:match("Flask (%d+)"))
+				if flaskNum then
+					env.flaskSlotMap[item] = flaskNum
+					env.flaskSlotOccupied[flaskNum] = true
+				end
 				if item.base.subType == "Life" then
-					local highestLifeRecovery = env.itemModDB.multipliers["LifeFlaskRecovery"] or 0
-					if item.flaskData.lifeTotal > highestLifeRecovery then
-						env.itemModDB.multipliers["LifeFlaskRecovery"] = item.flaskData.lifeTotal
+					local highestCharges = env.itemModDB.multipliers["LifeFlaskCharges"] or 0
+					if item.flaskData.chargesMax > highestCharges then
+						env.itemModDB.multipliers["LifeFlaskCharges"] = item.flaskData.chargesMax
 					end
 				end
 				item = nil
@@ -915,12 +980,14 @@ function calcs.initEnv(build, mode, override, specEnv)
 				if item.type == "Jewel" and item.base.subType == "Abyss" then
 					-- Update Abyss Jewel conditions/multipliers
 					local cond = "Have"..item.baseName:gsub(" ","")
+					local mult = item.baseName:gsub(" ","")
 					if not env.itemModDB.conditions[cond] then
 						env.itemModDB.conditions[cond] = true
 						env.itemModDB.multipliers["AbyssJewelType"] = (env.itemModDB.multipliers["AbyssJewelType"] or 0) + 1
 					end
 					if slot.parentSlot then
 						env.itemModDB.conditions[cond.."In"..slot.parentSlot.slotName] = true
+						env.itemModDB.multipliers[mult.."In"..slot.parentSlot.slotName] = (env.itemModDB.multipliers[mult.."In"..slot.parentSlot.slotName] or 0) + 1
 					end
 					env.itemModDB.multipliers["AbyssJewel"] = (env.itemModDB.multipliers["AbyssJewel"] or 0) + 1
 					if item.rarity == "NORMAL" then env.itemModDB.multipliers["NormalAbyssJewels"] = (env.itemModDB.multipliers["NormalAbyssJewels"] or 0) + 1 end
@@ -931,7 +998,7 @@ function calcs.initEnv(build, mode, override, specEnv)
 				end
 				if item.type == "Shield" and env.allocNodes[45175] and env.allocNodes[45175].dn == "Necromantic Aegis" then
 					-- Special handling for Necromantic Aegis
-					env.aegisModList = new("ModList")
+					env.aegisModList = new("ModList"):ModList()
 					for _, mod in ipairs(srcList) do
 						-- Filter out mods that apply to socketed gems, or which add supports
 						local add = true
@@ -953,7 +1020,7 @@ function calcs.initEnv(build, mode, override, specEnv)
 					local info = env.data.weaponTypeInfo[type]
 					if info and type ~= "Bow" then
 						local name = info.oneHand and "Energy Blade One Handed" or "Energy Blade Two Handed"
-						local item = new("Item")
+						local item = new("Item"):Item()
 						item.name = name
 						item.base = data.itemBases[name]
 						item.baseName = name
@@ -984,7 +1051,7 @@ function calcs.initEnv(build, mode, override, specEnv)
 					end
 				elseif slotName == "Weapon 1" and item.name == "The Iron Mass, Gladius" then
 					-- Special handling for The Iron Mass
-					env.theIronMass = new("ModList")
+					env.theIronMass = new("ModList"):ModList()
 					for _, mod in ipairs(srcList) do
 						-- Filter out mods that apply to socketed gems, or which add supports
 						local add = true
@@ -1002,7 +1069,7 @@ function calcs.initEnv(build, mode, override, specEnv)
 					end
 				elseif slotName == "Weapon 1" and item.grantedSkills[1] and item.grantedSkills[1].skillId == "UniqueAnimateWeapon" then
 					-- Special handling for The Dancing Dervish
-					env.weaponModList1 = new("ModList")
+					env.weaponModList1 = new("ModList"):ModList()
 					for _, mod in ipairs(srcList) do
 						-- Filter out mods that apply to socketed gems, or which add supports
 						local add = true
@@ -1057,29 +1124,29 @@ function calcs.initEnv(build, mode, override, specEnv)
 							env.itemModDB:ScaleAddMod(mod, scale)
 						end
 					end
-				elseif item.type == "Quiver" and items["Weapon 1"] and items["Weapon 1"].name:match("Widowhail") then
-					local widowHailMod=(1 + (items["Weapon 1"].baseModList:Sum("INC", nil, "EffectOfBonusesFromQuiver") or 100) / 100)
+				elseif item.type == "Quiver" and (items["Weapon 1"] and items["Weapon 1"].name:match("Widowhail") or env.initialNodeModDB:Sum("INC", nil, "EffectOfBonusesFromQuiver") > 0) then
+					local widowHailMod= (1 + (items["Weapon 1"] and items["Weapon 1"].baseModList:Sum("INC", nil, "EffectOfBonusesFromQuiver") + env.initialNodeModDB:Sum("INC", nil, "EffectOfBonusesFromQuiver") or 100) / 100)
 					scale = scale * widowHailMod
 					env.modDB:NewMod("WidowHailMultiplier", "BASE", widowHailMod, "Widowhail")
-					local combinedList = new("ModList")
+					local combinedList = new("ModList"):ModList()
 					for _, mod in ipairs(srcList) do
 						combinedList:MergeMod(mod)
 					end
 					env.itemModDB:ScaleAddList(combinedList, scale)
 				elseif env.modDB.multipliers["Corrupted" .. item.rarity:gsub("(%a)(%u*)", function(a, b) return a..string.lower(b) end) .. "JewelEffect"] and item.type == "Jewel" and item.corrupted and slot.nodeId and item.base.subType ~= "Charm" and not env.spec.nodes[slot.nodeId].containJewelSocket then
 					scale = scale + env.modDB.multipliers["Corrupted" .. item.rarity:gsub("(%a)(%u*)", function(a, b) return a..string.lower(b) end) .. "JewelEffect"]
-					local combinedList = new("ModList")
+					local combinedList = new("ModList"):ModList()
 					for _, mod in ipairs(srcList) do
 						combinedList:MergeMod(mod)
 					end	
 					env.itemModDB:ScaleAddList(combinedList, scale)
 				elseif item.type == "Gloves" and calcLib.mod(env.initialNodeModDB, nil, "EffectOfBonusesFromGloves") ~=1 then
 					scale = calcLib.mod(env.initialNodeModDB, nil, "EffectOfBonusesFromGloves") - 1
-					local combinedList = new("ModList")
+					local combinedList = new("ModList"):ModList()
 					for _, mod in ipairs(srcList) do
 						combinedList:MergeMod(mod)
 					end
-					local scaledList = new("ModList")
+					local scaledList = new("ModList"):ModList()
 					scaledList:ScaleAddList(combinedList, scale)
 					for _, mod in ipairs(scaledList) do
 						combinedList:MergeMod(mod, true)
@@ -1087,11 +1154,11 @@ function calcs.initEnv(build, mode, override, specEnv)
 					env.itemModDB:AddList(combinedList)
 				elseif item.type == "Boots" and calcLib.mod(env.initialNodeModDB, nil, "EffectOfBonusesFromBoots") ~= 1 then
 					scale = calcLib.mod(env.initialNodeModDB, nil, "EffectOfBonusesFromBoots") - 1
-					local combinedList = new("ModList")
+					local combinedList = new("ModList"):ModList()
 					for _, mod in ipairs(srcList) do
 						combinedList:MergeMod(mod)
 					end
-					local scaledList = new("ModList")
+					local scaledList = new("ModList"):ModList()
 					scaledList:ScaleAddList(combinedList, scale)
 					for _, mod in ipairs(scaledList) do
 						combinedList:MergeMod(mod, true)
@@ -1140,13 +1207,13 @@ function calcs.initEnv(build, mode, override, specEnv)
 					-- Calculate socket counts
 					local slotEmptySocketsCount = { R = 0, G = 0, B = 0, W = 0}	
 					local slotGemSocketsCount = 0
-					local socketedGems = 0
+					local socketedGems = { }
 					-- Loop through socket groups to calculate number of socketed gems
-					for _, socketGroup in pairs(env.build.skillsTab.socketGroupList) do
+					for _, socketGroup in ipairs(env.build.skillsTab.socketGroupList) do
 						if (not socketGroup.source and socketGroup.enabled and socketGroup.slot and socketGroup.slot == slotName and socketGroup.gemList) then
-							for _, gem in pairs(socketGroup.gemList) do
+							for _, gem in ipairs(socketGroup.gemList) do
 								if (gem.gemData and gem.enabled) then
-									socketedGems = socketedGems + 1
+									t_insert(socketedGems, gem)
 								end
 							end
 						end
@@ -1156,18 +1223,36 @@ function calcs.initEnv(build, mode, override, specEnv)
 						if socket.color == 'R' or socket.color == 'B' or socket.color == 'G' or socket.color == 'W' then
 							slotGemSocketsCount = slotGemSocketsCount + 1
 							-- loop through sockets indexes that are greater than number of socketed gems
-							if i > socketedGems then
+							if i > #socketedGems then
 								slotEmptySocketsCount[socket.color] = slotEmptySocketsCount[socket.color] + 1
 							end
 						end
 					end
-					env.itemModDB.multipliers["SocketedGemsIn"..slotName] = (env.itemModDB.multipliers["SocketedGemsIn"..slotName] or 0) + math.min(slotGemSocketsCount, socketedGems)
+					local socketedColours = { R = 0, G = 0, B = 0 }
+					-- Only gems that fit in the item's sockets contribute to multipliers
+					for i = 1, math.min(slotGemSocketsCount, #socketedGems) do
+						local tags = socketedGems[i].gemData.tags
+						if tags and tags.strength then
+							socketedColours.R = socketedColours.R + 1
+						end
+						if tags and tags.dexterity then
+							socketedColours.G = socketedColours.G + 1
+						end
+						if tags and tags.intelligence then
+							socketedColours.B = socketedColours.B + 1
+						end
+					end
+					env.itemModDB.multipliers["SocketedGemsIn" .. slotName] = math.min(slotGemSocketsCount, #socketedGems)
+					env.itemModDB.multipliers["SocketedRedGemsIn" .. slotName] = socketedColours.R
+					env.itemModDB.multipliers["SocketedGreenGemsIn" .. slotName] = socketedColours.G
+					env.itemModDB.multipliers["SocketedBlueGemsIn" .. slotName] = socketedColours.B
+					env.itemModDB.multipliers["EmptySocketIn" .. slotName] = math.min(slotGemSocketsCount, slotEmptySocketsCount.R + slotEmptySocketsCount.G + slotEmptySocketsCount.B + slotEmptySocketsCount.W)
 					env.itemModDB.multipliers.EmptyRedSocketsInAnySlot = (env.itemModDB.multipliers.EmptyRedSocketsInAnySlot or 0) + slotEmptySocketsCount.R
 					env.itemModDB.multipliers.EmptyGreenSocketsInAnySlot = (env.itemModDB.multipliers.EmptyGreenSocketsInAnySlot or 0) + slotEmptySocketsCount.G
 					env.itemModDB.multipliers.EmptyBlueSocketsInAnySlot = (env.itemModDB.multipliers.EmptyBlueSocketsInAnySlot or 0) + slotEmptySocketsCount.B
 					env.itemModDB.multipliers.EmptyWhiteSocketsInAnySlot = (env.itemModDB.multipliers.EmptyWhiteSocketsInAnySlot or 0) + slotEmptySocketsCount.W
 					-- Warn if socketed gems over socket limit
-					if socketedGems > slotGemSocketsCount then
+					if #socketedGems > slotGemSocketsCount then
 						env.itemWarnings.socketLimitWarning = env.itemWarnings.socketLimitWarning or { }
 						t_insert(env.itemWarnings.socketLimitWarning, slotName)
 					end
@@ -1201,9 +1286,11 @@ function calcs.initEnv(build, mode, override, specEnv)
 	-- Add granted passives (e.g., amulet anoints)
 	if not accelerate.nodeAlloc then
 		for _, passive in pairs(env.modDB:List(nil, "GrantedPassive")) do
-			local node = env.spec.tree.notableMap[passive]
+			local node = env.spec.tree.notableMap[passive] or env.spec.tree.ascendancyMap[passive]
+			local specNode = node and env.spec.nodes[node.id] -- use the conquered node data, if available
+			node = node or build.latestTree.ascendancyMap[passive]
 			if node and (not override.removeNodes or not override.removeNodes[node.id]) then
-				env.allocNodes[node.id] = env.spec.nodes[node.id] or node -- use the conquered node data, if available
+				env.allocNodes[node.id] = specNode or node
 				env.grantedPassives[node.id] = true
 				env.extraRadiusNodeList[node.id] = nil
 			end
@@ -1236,7 +1323,7 @@ function calcs.initEnv(build, mode, override, specEnv)
 	end
 	if not override or (override and not override.extraJewelFuncs) then
 		override = override or {}
-		override.extraJewelFuncs = new("ModList")
+		override.extraJewelFuncs = new("ModList"):ModList()
 		override.extraJewelFuncs.actor = env.player
 		for _, mod in ipairs(env.modDB:Tabulate("LIST", nil, "ExtraJewelFunc")) do
 			override.extraJewelFuncs:AddMod(mod.mod)
@@ -1436,29 +1523,45 @@ function calcs.initEnv(build, mode, override, specEnv)
 					t_insert(targetListList, supportLists[group])
 				end
 
+				local function addExtraSupports(value, grantedEffect, level)
+					local grantedEffect = grantedEffect or env.data.skills[value.skillId]
+					if value and grantedEffect then -- Only item ExtraSupport gems should be flagged as fromItem. Imbued gems do not pass this check
+						grantedEffect.fromItem = true
+					end
+					-- Some skill gems share the same name as support gems, e.g. Barrage.
+					-- Since a support gem is expected here, if the first lookup returns a skill, then
+					-- prepending "Support" to the skillId will find the support version of the gem.
+					if value and grantedEffect and not grantedEffect.support then
+						grantedEffect = env.data.skills["Support"..value.skillId]
+						grantedEffect.fromItem = true
+					end
+					if grantedEffect then
+						for _, targetList in ipairs(targetListList) do
+							t_insert(targetList, {
+								grantedEffect = grantedEffect,
+								gemData = env.data.gems[env.data.gemForBaseName[grantedEffect.name:lower()] or env.data.gemForBaseName[(grantedEffect.name .. " Support"):lower()]],
+								level = level or value.level,
+								quality = 0,
+								enabled = true,
+							})
+						end
+					end
+				end
+
 				-- if not unique item that provides skills
 				if not group.source then
 					-- Add extra supports from the item this group is socketed in
 					for _, value in ipairs(env.modDB:List(groupCfg, "ExtraSupport")) do
-						local grantedEffect = env.data.skills[value.skillId]
-						-- Some skill gems share the same name as support gems, e.g. Barrage.
-						-- Since a support gem is expected here, if the first lookup returns a skill, then
-						-- prepending "Support" to the skillId will find the support version of the gem.
-						if grantedEffect and not grantedEffect.support then
-							grantedEffect = env.data.skills["Support"..value.skillId]
-						end
-						grantedEffect.fromItem = true
-						if grantedEffect then
-							for _, targetList in ipairs(targetListList) do
-								t_insert(targetList, {
-									grantedEffect = grantedEffect,
-									gemData = env.data.gems[env.data.gemForBaseName[grantedEffect.name:lower()] or env.data.gemForBaseName[(grantedEffect.name .. " Support"):lower()]],
-									level = value.level,
-									quality = 0,
-									enabled = true,
-								})
-							end
-						end
+						addExtraSupports(value)
+					end
+				end
+				-- if the slot has an imbued support, add it as an ExtraSupport
+				if build.skillsTab.imbuedSupportBySlot and build.skillsTab.imbuedSupportBySlot[slotName] and group.imbuedSupport then
+					local imbuedSupport = build.skillsTab.imbuedSupportBySlot[slotName]
+					addExtraSupports(nil, imbuedSupport, 1)
+					local imbuedGemData = env.data.gems[env.data.gemForSkill[imbuedSupport]]
+					if imbuedGemData and imbuedGemData.secondaryGrantedEffect and imbuedGemData.secondaryGrantedEffect.support then
+						addExtraSupports(nil, imbuedGemData.secondaryGrantedEffect, 1)
 					end
 				end
 
@@ -1473,11 +1576,15 @@ function calcs.initEnv(build, mode, override, specEnv)
 							if not grantedEffect or not grantedEffect.support then
 								return
 							end
+							local actualQuality = gemInstance.quality + (gemInstance.matchesSocket and data.misc.MatchingSocketQualityBonus or 0)
 							local supportEffect = {
 								grantedEffect = grantedEffect,
 								level = gemInstance.level,
-								quality = gemInstance.quality,
-								qualityId = gemInstance.qualityId,
+								quality = actualQuality,
+								globalQuality = 0,
+								itemQuality = 0,
+								supportQuality = 0,
+								socketQuality = gemInstance.matchesSocket and data.misc.MatchingSocketQualityBonus or 0,
 								srcInstance = gemInstance,
 								gemData = gemInstance.gemData,
 								superseded = false,
@@ -1545,11 +1652,15 @@ function calcs.initEnv(build, mode, override, specEnv)
 						for index, grantedEffect in ipairs(grantedEffectList) do
 							if not grantedEffect.support and not grantedEffect.unsupported and (not grantedEffect.hasGlobalEffect or gemInstance["enableGlobal"..index]) then
 								slotHasActiveSkill = true
+								local actualQuality = gemInstance.quality + (gemInstance.matchesSocket and data.misc.MatchingSocketQualityBonus or 0)
 								local activeEffect = {
 									grantedEffect = grantedEffect,
 									level = gemInstance.level,
-									quality = gemInstance.quality,
-									qualityId = gemInstance.qualityId,
+									quality = actualQuality,
+									globalQuality = 0,
+									itemQuality = 0,
+									supportQuality = 0,
+									socketQuality = gemInstance.matchesSocket and data.misc.MatchingSocketQualityBonus or 0,
 									srcInstance = gemInstance,
 									gemData = gemInstance.gemData,
 								}
@@ -1749,6 +1860,7 @@ function calcs.initEnv(build, mode, override, specEnv)
 			activeSkill.skillData.soulPreventionDuration = activeSkill.soulPreventionDuration
 			activeSkill.skillData.totemLevel = skillData.totemLevel
 			activeSkill.skillData.damageEffectiveness = skillData.damageEffectiveness
+			activeSkill.skillData.stagesMax = skillData.stagesMax
 			activeSkill.skillData.manaReservationPercent = skillData.manaReservationPercent
 		end
 	end
